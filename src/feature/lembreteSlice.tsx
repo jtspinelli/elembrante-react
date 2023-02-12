@@ -19,6 +19,6 @@ const lembreteSlice = createSlice({
 export const { selectAll, selectById } = lembreteAdapter.getSelectors(
   (state: RootState) => state.lembretesReducer
 );
-export const { addLembrete } = lembreteSlice.actions;
+export const { addLembrete, removeLembrete } = lembreteSlice.actions;
 
 export default lembreteSlice;
