@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const sideBarWidth = 500;
+export const sideBarWidth = "25vw";
 
 const sideBarSlice = createSlice({
   name: "sidebar",

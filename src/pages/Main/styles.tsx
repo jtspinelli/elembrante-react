@@ -4,7 +4,7 @@ const spacing = "20px";
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
-  width: number;
+  width: string;
 }>(({ theme, open, width }) => ({
   flexGrow: 1,
   display: "flex",
@@ -13,6 +13,10 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   "& #container": {
     width: "100%",
     maxWidth: "1100px",
+
+    "&>h3": {
+      marginBottom: "20px",
+    },
 
     "& #cards-container": {
       display: "flex",
@@ -28,7 +32,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: `-${width}px`,
+  marginLeft: `-${width}`,
   ...(open && {
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
