@@ -7,36 +7,38 @@ import {
   Divider,
   IconButton,
   Modal,
-  Snackbar,
   Typography,
 } from "@mui/material";
 import { RootState } from "../../feature/store";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAll } from "../../feature/lembreteSlice";
 import { removeLembrete } from "../../feature/lembreteSlice";
-import { useEffect, useState } from "react";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import { useState } from "react";
 import AppBar from "../components/appBar/AppBar";
 import DrawerHeader from "../components/sideBar/styles";
 import SideBar from "../components/sideBar/SideBar";
-import Main from "./styles";
+import Main, { modalStyle } from "./styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Lembrete from "../../feature/Lembrete";
 import React from "react";
+import { useSnackbar, VariantType } from "notistack";
 
 const MainPage: React.FC = () => {
   const { open, width } = useSelector(
     (state: RootState) => state.sideBarReducer
   );
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
-  const [selectedToRemove, setSelectedToRemove] = useState<string>("");
-  const [toastMessage, setToastMessage] = useState<string>("");
-
   const lembretes: Lembrete[] = useSelector(selectAll);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [selectedToRemove, setSelectedToRemove] = useState<string>("");
 
   const dispatch = useDispatch();
+
+  function showMessage(message: string, variant: VariantType | undefined) {
+    enqueueSnackbar(message, { variant });
+  }
 
   function confirmRemove(id: string) {
     setSelectedToRemove(id);
@@ -45,8 +47,8 @@ const MainPage: React.FC = () => {
 
   function remove() {
     dispatch(removeLembrete(selectedToRemove));
-    setToastMessage("Lembrete excluído com sucesso!");
     closeModal();
+    showMessage("Lembrete excluído com sucesso!", "success");
   }
 
   function closeModal() {
@@ -56,41 +58,6 @@ const MainPage: React.FC = () => {
   function openModal() {
     setModalOpen(true);
   }
-
-  function closeSnackbar() {
-    setSnackbarOpen(false);
-  }
-
-  function clearToastMessage() {
-    setToastMessage("");
-  }
-
-  function showToast() {
-    if (toastMessage.length === 0) return;
-    setSnackbarOpen(true);
-    setTimeout(clearToastMessage, 3100);
-  }
-
-  useEffect(showToast, [toastMessage]);
-
-  const modalStyle = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-
-  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props,
-    ref
-  ) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -163,20 +130,6 @@ const MainPage: React.FC = () => {
           </Box>
         </Box>
       </Modal>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={closeSnackbar}
-      >
-        <Alert
-          onClose={closeSnackbar}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {toastMessage}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };
