@@ -28,9 +28,11 @@ const AppBar: React.FC = () => {
         >
           <AddCircleIcon />
         </IconButton>
-        <Typography variant="h6" noWrap component="div">
-          {/* Meus lembretes */}
-        </Typography>
+        {!open && (
+          <Typography variant="h6" noWrap component="div">
+            Novo lembrete
+          </Typography>
+        )}
       </Toolbar>
     </CustomAppBar>
   );

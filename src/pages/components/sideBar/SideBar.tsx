@@ -5,12 +5,10 @@ import NewLembreteForm from "../newLembrete/NewLembrete";
 import { RootState } from "../../../feature/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpen } from "../../../feature/sideBarSlice";
-import DrawerHeader from "./header";
+import DrawerHeader, { styles } from "./styles";
 
 const SideBar: React.FC = () => {
-  const { open, width } = useSelector(
-    (state: RootState) => state.sideBarReducer
-  );
+  const { open } = useSelector((state: RootState) => state.sideBarReducer);
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -19,19 +17,7 @@ const SideBar: React.FC = () => {
   }
 
   return (
-    <Drawer
-      sx={{
-        width: width,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: width,
-          boxSizing: "border-box",
-        },
-      }}
-      variant="persistent"
-      anchor="left"
-      open={open}
-    >
+    <Drawer sx={styles} variant="persistent" anchor="left" open={open}>
       <DrawerHeader>
         <IconButton onClick={close}>
           {theme.direction === "ltr" ? (

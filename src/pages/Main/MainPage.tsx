@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { RootState } from "../../feature/store";
 import { useSelector } from "react-redux";
 import AppBar from "../components/appBar/AppBar";
-import DrawerHeader from "../components/sideBar/header";
+import DrawerHeader from "../components/sideBar/styles";
 import SideBar from "../components/sideBar/SideBar";
 import Main from "./main";
 
