@@ -6,7 +6,9 @@ import { setOpen } from "../../../feature/sideBarSlice";
 import CustomAppBar from "./custom";
 
 const AppBar: React.FC = () => {
-  const { open } = useSelector((state: RootState) => state.sideBarReducer);
+  const { open, width } = useSelector(
+    (state: RootState) => state.sideBarReducer
+  );
 
   const dispatch = useDispatch();
 
@@ -15,7 +17,7 @@ const AppBar: React.FC = () => {
   }
 
   return (
-    <CustomAppBar position="fixed" open={open}>
+    <CustomAppBar position="fixed" open={open} width={width}>
       <Toolbar>
         <IconButton
           color="inherit"

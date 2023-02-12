@@ -8,11 +8,11 @@ import { setOpen } from "../../../feature/sideBarSlice";
 import DrawerHeader from "./header";
 
 const SideBar: React.FC = () => {
-  const { open } = useSelector((state: RootState) => state.sideBarReducer);
+  const { open, width } = useSelector(
+    (state: RootState) => state.sideBarReducer
+  );
   const theme = useTheme();
   const dispatch = useDispatch();
-
-  const drawerWidth = 500;
 
   function close() {
     dispatch(setOpen(false));
@@ -21,10 +21,10 @@ const SideBar: React.FC = () => {
   return (
     <Drawer
       sx={{
-        width: drawerWidth,
+        width: width,
         flexShrink: 0,
         "& .MuiDrawer-paper": {
-          width: drawerWidth,
+          width: width,
           boxSizing: "border-box",
         },
       }}

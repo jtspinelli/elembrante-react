@@ -27,6 +27,7 @@ const NewLembreteForm: React.FC = () => {
       id: uuid(),
       descricao,
       detalhamento,
+      criadoEm: new Date(),
     };
 
     dispatch(addLembrete(newLembrete));
