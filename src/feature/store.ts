@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/es/storage";
 import lembreteSlice from "./lembreteSlice";
+import sideBarSlice from "./sideBarSlice";
 
 const persistConfig = {
   key: "root",
@@ -13,6 +14,7 @@ const persistedReducer = persistReducer(persistConfig, lembreteSlice.reducer);
 const store = configureStore({
   reducer: {
     lembretesReducer: persistedReducer,
+    sideBarReducer: sideBarSlice.reducer,
   },
 });
 
