@@ -1,27 +1,26 @@
 import { Box, Typography } from "@mui/material";
-import { useSelector } from "react-redux/es/exports";
-import { selectAll } from "../../feature/lembreteSlice";
-import Lembrete from "../../feature/Lembrete";
+import { RootState } from "../../feature/store";
+import { useSelector } from "react-redux";
 import AppBar from "../components/appBar/AppBar";
+import DrawerHeader from "../components/sideBar/header";
 import SideBar from "../components/sideBar/SideBar";
+import Main from "./main";
 
 const MainPage: React.FC = () => {
-  const lembretes = useSelector(selectAll);
-
+  const { open, width } = useSelector(
+    (state: RootState) => state.sideBarReducer
+  );
   return (
-    <>
+    <Box sx={{ display: "flex" }}>
       <AppBar />
 
       <SideBar />
 
-      <Box sx={{ paddingTop: "64px" }}>
-        <Typography variant="h1">Meus Lembretes</Typography>
-
-        {lembretes.map((lembrete: Lembrete, index) => (
-          <p key={index}> {lembrete.descricao} </p>
-        ))}
-      </Box>
-    </>
+      <Main open={open} width={width}>
+        <DrawerHeader />
+        <Typography variant="h3">Meus lembretes</Typography>
+      </Main>
+    </Box>
   );
 };
 

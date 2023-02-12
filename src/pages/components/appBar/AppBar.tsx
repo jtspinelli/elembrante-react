@@ -26,11 +26,10 @@ const AppBar: React.FC = () => {
           edge="start"
           sx={{ mr: 2, ...(open && { display: "none" }) }}
         >
-          {/* <MenuIcon /> */}
           <AddCircleIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          Meus lembretes
+          {/* Meus lembretes */}
         </Typography>
       </Toolbar>
     </CustomAppBar>

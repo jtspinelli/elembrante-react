@@ -44,7 +44,15 @@ const SideBar: React.FC = () => {
 
       <Divider />
 
-      <Box sx={{ padding: "20px" }}>
+      <Box
+        sx={{
+          padding: "20px",
+          position: "absolute",
+          top: "50%",
+          width: "100%",
+          transform: "translateY(-108%)",
+        }}
+      >
         <NewLembreteForm />
       </Box>
     </Drawer>

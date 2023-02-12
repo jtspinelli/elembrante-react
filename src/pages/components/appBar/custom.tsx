@@ -1,14 +1,9 @@
 import { styled } from "@mui/material";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-
-interface CustomAppBarProps extends MuiAppBarProps {
-  open?: boolean;
-  width: number;
-}
+import MuiAppBar from "@mui/material/AppBar";
 
 const CustomAppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
-})<CustomAppBarProps>(({ theme, open, width }) => ({
+})<{ open?: boolean; width: number }>(({ theme, open, width }) => ({
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
