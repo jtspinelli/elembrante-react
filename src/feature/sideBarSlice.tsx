@@ -1,18 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-export const sideBarWidth = "25vw";
+export const sideBarWidth = '25vw';
 
 const sideBarSlice = createSlice({
-  name: "sidebar",
-  initialState: {
-    open: true,
-    width: sideBarWidth,
-  },
-  reducers: {
-    setOpen(state, action) {
-      state.open = action.payload;
-    },
-  },
+	name: 'sidebar',
+	initialState: {
+		open: true,
+		width: sideBarWidth,
+	},
+	reducers: {
+		setOpen(state, action) {
+			state.open = action.payload;
+		},
+	},
 });
 
 export const { setOpen } = sideBarSlice.actions;
