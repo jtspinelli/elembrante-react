@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 import Lembrete from './Lembrete';
-import { RootState } from './store'
+import { RootState } from './store';
 
 const lembreteAdapter = createEntityAdapter<Lembrete>({
 	selectId: (lembrete) => lembrete.id,
