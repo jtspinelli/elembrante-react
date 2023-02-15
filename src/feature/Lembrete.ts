@@ -1,7 +1,7 @@
 interface Lembrete {
   id: string;
-  descricao: string;
-  detalhamento: string;
+  descricao: string | null;
+  detalhamento: string | null;
   criadoEm: Date;
 }
 
