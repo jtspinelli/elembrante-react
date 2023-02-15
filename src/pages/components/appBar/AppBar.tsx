@@ -4,7 +4,7 @@ import { useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
-const NewAppBar: React.FC = () => {
+const CustomAppBar: React.FC = () => {
 	const [auth, setAuth] = useState(true);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -68,4 +68,4 @@ const NewAppBar: React.FC = () => {
 	);
 };
 
-export default NewAppBar;
+export default CustomAppBar;
