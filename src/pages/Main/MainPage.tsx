@@ -1,10 +1,15 @@
+import React from 'react';
 import { Box } from '@mui/material';
 import { FormContainer } from './styles';
-import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectAll } from '../../feature/lembreteSlice';
+import Lembrete from '../../feature/Lembrete';
 import Form from '../components/form/Form';
 import AppBar from '../components/appBar/AppBar';
 
 const MainPage: React.FC = () => {
+	const lembretes = useSelector(selectAll);
+
 	return (
 		<>
 			<AppBar />
@@ -14,6 +19,10 @@ const MainPage: React.FC = () => {
 					<Form />
 				</FormContainer>
 			</Box>
+
+			{ lembretes.map((lembrete: Lembrete) => (
+				<p key={lembrete.id}> { lembrete.descricao } </p>
+			)) }
 		</>        
 	);
 };
