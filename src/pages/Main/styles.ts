@@ -5,7 +5,7 @@ export const FormSection = styled('section')({
 });
 
 export const LembretesSection = styled('section')({
-	display: 'flex', gap: '20px' 
+	display: 'flex', flexWrap: 'wrap', gap: '20px' 
 });
 
 export const Main = styled('main')({

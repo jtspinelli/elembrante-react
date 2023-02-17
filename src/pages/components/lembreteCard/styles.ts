@@ -3,7 +3,7 @@ import { styled, Box } from '@mui/material';
 export const LembreteContainer = styled(Box)({
 	border: '1px solid gainsboro',
 	borderRadius: '8px',
-	width: '250px',	
+	width: 'calc(25% - 20px * .75)',	
 	display: 'flex',
 	flexDirection: 'column',
 	justifyContent: 'space-between',						
