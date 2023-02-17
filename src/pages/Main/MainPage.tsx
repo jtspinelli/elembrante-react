@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box } from '@mui/material';
 import { FormSection, LembretesSection, Main } from './styles';
 import { useSelector } from 'react-redux';
 import { selectAll } from '../../feature/lembreteSlice';
