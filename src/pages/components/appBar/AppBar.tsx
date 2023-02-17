@@ -1,38 +1,52 @@
-import React from 'react';
-import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Box, IconButton, Menu, MenuItem, styled, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import { useDispatch, useSelector } from 'react-redux';
+import { setOpen } from '../../../feature/sideBarSlice';
+import { RootState } from '../../../feature/store';
+import { AppBar, AppBarProps } from './styles';
 
-const CustomAppBar: React.FC = () => {
-	const [auth, setAuth] = useState(true);
+const CustomAppBar: React.FC<AppBarProps> = () => {	
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [auth, setAuth] = useState(true);
+	const { open, width } = useSelector((state: RootState) => state.sideBarReducer);
 
-	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget);
-	};
+	const dispatch = useDispatch();
+
+	const handleDrawerOpen = () => {
+		dispatch(setOpen(true));
+	  };
 
 	const closeMenu = () => {
 		setAnchorEl(null);
 	};
 
+	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+
 	return (
-		<AppBar position="static">
-			<Toolbar>
-				<IconButton
-					size="large"
-					edge="start"
-					color="inherit"
-					aria-label="menu"
-					sx={{ mr: 2 }}
-				>
-					<MenuIcon />
-				</IconButton>
-				<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            		Elembrante
-				</Typography>
+		<AppBar position="fixed" open={open} drawerWidth={width}>
+			<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Box sx={{ display: 'flex', alignItems: 'center' }}>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						onClick={handleDrawerOpen}
+						edge="start"
+						sx={{ mr: 2, ...(open && { display: 'none' }) }}
+					>
+						<MenuIcon />
+					</IconButton>
+
+					<Typography variant="h6" noWrap component="div">
+            				Elembrante
+					</Typography>
+				</Box>				
+
 				{auth && (
-					<div>
+					<Box>
 						<IconButton
 							size="large"
 							aria-label="account of current user"
@@ -61,7 +75,7 @@ const CustomAppBar: React.FC = () => {
 							<MenuItem onClick={closeMenu}>Minha conta</MenuItem>
 							<MenuItem onClick={closeMenu}>Sair</MenuItem>
 						</Menu>
-					</div>
+					</Box>
 				)}
 			</Toolbar>
 		</AppBar>

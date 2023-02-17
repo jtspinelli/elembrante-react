@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const sideBarWidth = '25vw';
+export const sideBarWidth = '18vw';
 
 const sideBarSlice = createSlice({
 	name: 'sidebar',
 	initialState: {
-		open: true,
+		open: false,
 		width: sideBarWidth,
 	},
 	reducers: {

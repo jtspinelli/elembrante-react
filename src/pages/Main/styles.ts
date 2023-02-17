@@ -8,6 +8,22 @@ export const LembretesSection = styled('section')({
 	display: 'flex', flexWrap: 'wrap', gap: '20px' 
 });
 
-export const Main = styled('main')({
-	maxWidth: '1000px', margin: '0 auto', padding: '20px 0'
-});
+export const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+	open?: boolean;
+	drawerWidth: string;
+  }>(({ theme, open, drawerWidth }) => ({
+  	flexGrow: 1,
+  	padding: theme.spacing(3),
+  	transition: theme.transitions.create('margin', {
+	  easing: theme.transitions.easing.sharp,
+	  duration: theme.transitions.duration.leavingScreen,
+  	}),
+  	marginLeft: `-${drawerWidth}`,
+  	...(open && {
+	  transition: theme.transitions.create('margin', {
+  			easing: theme.transitions.easing.easeOut,
+  			duration: theme.transitions.duration.enteringScreen,
+	  }),
+	  marginLeft: 0
+  	}),
+  }));
