@@ -3,6 +3,7 @@ interface Lembrete {
   descricao: string | null;
   detalhamento: string | null;
   criadoEm: Date;
+  excluido: boolean;
 }
 
 export default Lembrete;

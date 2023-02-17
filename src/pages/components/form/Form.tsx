@@ -38,7 +38,8 @@ const Form: React.FC = () => {
 			id: uuid(),
 			criadoEm: new Date(),
 			descricao: tituloTextbox.current?.innerText.length ? tituloTextbox.current?.innerText : null,
-			detalhamento: detalhamentoTextbox.current?.innerText.length ? detalhamentoTextbox.current?.innerText : null
+			detalhamento: detalhamentoTextbox.current?.innerText.length ? detalhamentoTextbox.current?.innerText : null,
+			excluido: false
 		};
 
 		dispatch(addLembrete(lembrete));

@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { Box, Button, IconButton } from '@mui/material';
-import { addLembrete, removeLembrete } from '../../../feature/lembreteSlice';
+import { addLembrete, removeLembrete, updateLembrete } from '../../../feature/lembreteSlice';
 import { Actions, Detalhamento, LembreteContainer, Titulo } from './styles';
 import { v4 as uuid } from 'uuid';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -14,9 +14,9 @@ const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembret
 	const dispatch = useDispatch();
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-	/* #region CRUD: Delete */
-	const action = (key:string, lembrete: Lembrete) => {
-		const revert = () => revertRemove(lembrete, key);
+	/* #region CRUD: Delete/Archive */
+	const action = (key:string, lembrete: Lembrete, crudOperation: string) => {
+		const revert = () => crudOperation === 'delete' ? revertRemove(lembrete, key) : revertArchive(lembrete, key);
 		return <Button sx={{ color: 'orange' }} onClick={revert}> Desfazer </Button>;
 	};
 
@@ -25,7 +25,7 @@ const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembret
 		const key = uuid();
 
 		enqueueSnackbar('Lembrete removido', {
-			action: action(key, {...lembrete}),
+			action: action(key, {...lembrete}, 'delete'),
 			key
 		});
 	}
@@ -33,8 +33,23 @@ const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembret
 	function revertRemove(lembrete: Lembrete, snackbarKey: string){
 		dispatch(addLembrete(lembrete));
 		closeSnackbar(snackbarKey);
+	}	
+
+	function archive(lembrete: Lembrete){
+		dispatch(updateLembrete({id: lembrete.id, changes: { excluido: true }}));
+		const key = uuid();
+
+		enqueueSnackbar('Lembrete arquivado', {
+			action: action(key, lembrete, 'archive'),
+			key
+		});
 	}
-	/* #endregion */
+
+	function revertArchive(lembrete: Lembrete, snackbarKey: string){
+		dispatch(updateLembrete({id: lembrete.id, changes: { excluido: false }}));
+		closeSnackbar(snackbarKey);
+	}
+	/* #endregion */	
 
 	return (
 		<LembreteContainer>
@@ -46,7 +61,7 @@ const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembret
 			<Actions id="action-area">
 
 				<IconButton onClick={() => { remove(props.lembrete); }}> <DeleteIcon /> </IconButton>
-				<IconButton> <ArchiveIcon /> </IconButton>
+				<IconButton onClick={() => { archive(props.lembrete); }}> <ArchiveIcon /> </IconButton>
 				<IconButton> <EditIcon /> </IconButton>
 			</Actions>
 		</LembreteContainer>

@@ -11,7 +11,9 @@ const MainPage: React.FC = () => {
 	const lembretes = useSelector(selectAll);
 
 	function getLembretes(){
-		return lembretes.sort((a: Lembrete, b: Lembrete) => b.criadoEm > a.criadoEm ? 1 : -1);
+		return lembretes
+			.sort((a: Lembrete, b: Lembrete) => b.criadoEm > a.criadoEm ? 1 : -1)
+			.filter(lembrete => !lembrete.excluido);
 	}
 
 	function getCard(lembrete: Lembrete){
