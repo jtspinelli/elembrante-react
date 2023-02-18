@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, IconButton, Menu, MenuItem, styled, Toolbar, Typography } from '@mui/material';
+import { Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +16,7 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 
 	const handleDrawerOpen = () => {
 		dispatch(setOpen(true));
-	  };
+	};
 
 	const closeMenu = () => {
 		setAnchorEl(null);
@@ -27,7 +27,7 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 	};
 
 	return (
-		<AppBar position="fixed" open={open} drawerWidth={width}>
+		<AppBar position="fixed" open={open} drawerwidth={width}>
 			<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
 				<Box sx={{ display: 'flex', alignItems: 'center' }}>
 					<IconButton

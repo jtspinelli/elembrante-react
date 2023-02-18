@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import Lembrete from '../../../feature/Lembrete';
+import { setModalOpen, setLembrete } from '../../../feature/editModalSlice';
 
 const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembrete }) => {
 	const dispatch = useDispatch();
@@ -51,6 +52,11 @@ const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembret
 	}
 	/* #endregion */	
 
+	function edit(){
+		dispatch(setModalOpen(true)); 
+		dispatch(setLembrete(props.lembrete));
+	}
+
 	return (
 		<LembreteContainer>
 			<Box>
@@ -62,7 +68,7 @@ const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembret
 
 				<IconButton onClick={() => { remove(props.lembrete); }}> <DeleteIcon /> </IconButton>
 				<IconButton onClick={() => { archive(props.lembrete); }}> <ArchiveIcon /> </IconButton>
-				<IconButton> <EditIcon /> </IconButton>
+				<IconButton onClick={edit}> <EditIcon /> </IconButton>
 			</Actions>
 		</LembreteContainer>
 	);
