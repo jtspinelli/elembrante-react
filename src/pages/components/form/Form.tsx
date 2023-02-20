@@ -3,6 +3,7 @@ import { BoxDetalhamento, BoxTitulo, CustomPaper, Placeholder, TextBoxDetalhamen
 import { v4 as uuid } from 'uuid';
 import { addLembrete } from '../../../feature/lembreteSlice';
 import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
 import Lembrete from '../../../feature/Lembrete';
 
 const Form: React.FC = () => {
@@ -11,6 +12,7 @@ const Form: React.FC = () => {
 	const formIsExpanded = useRef(formExpanded);
 	const detalhamentoTextbox = useRef<HTMLDivElement>();
 	const tituloTextbox = useRef<HTMLDivElement>();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const dispatch = useDispatch();
 
@@ -43,6 +45,8 @@ const Form: React.FC = () => {
 		};
 
 		dispatch(addLembrete(lembrete));
+
+		enqueueSnackbar('Lembrete criado!', { variant: 'success', autoHideDuration: 2000 });
 
 		resetForm();
 	}
