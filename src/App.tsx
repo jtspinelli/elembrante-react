@@ -6,7 +6,9 @@ import { SnackbarProvider } from 'notistack';
 import theme from './theme';
 import MainPage from './pages/Main/MainPage';
 
-const router = createBrowserRouter([{ path: '/', element: <MainPage /> }]);
+const router = createBrowserRouter([
+	{ path: '/*', element: <MainPage />}
+]);
 
 const App = () => {
 	return (
