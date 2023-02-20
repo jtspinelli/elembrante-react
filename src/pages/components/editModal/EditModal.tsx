@@ -1,52 +1,56 @@
 import { Box, Modal } from '@mui/material';
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../feature/store';
+import { modalStyle } from './styles';
 import { setModalOpen } from '../../../feature/editModalSlice';
+import { updateLembrete } from '../../../feature/lembreteSlice';
+import { useSnackbar } from 'notistack';
 import Edit from './components/Edit';
-
-export 	const modalStyle = {
-	position: 'absolute',
-	top: '50%',
-	left: '50%',
-	transform: 'translate(-50%, -50%)',
-	width: 400,
-	bgcolor: 'background.paper',
-	border: 'none',
-	borderRadius: '8px',
-	boxShadow: 24,
-	p: 0,
-};
 
 const EditModal: React.FC = () => {
 	const { modalOpen, lembrete } = useSelector((state: RootState) => state.editModalReducer);
-	const textBoxDetalhamento = useRef<HTMLDivElement>();
+	const titulo = useRef<HTMLElement>();
+	const detalhamento = useRef<HTMLElement>();
+	const { enqueueSnackbar } = useSnackbar();
 	const dispatch = useDispatch();
 
-	const handleClose = () => dispatch(setModalOpen(false));
+	function updateIfChanged(){
+		if(!lembrete) return;
 
-	useEffect(() => {
-		if(textBoxDetalhamento.current) {
-			const range = document.createRange();
-			const sel = window.getSelection();
+		const editTitulo = titulo.current?.innerText;
+		const editDetalhamento = detalhamento.current?.innerText;
+		const tituloUnchanged = editTitulo === lembrete?.descricao;
+		const detalhamentoUnchanged = editDetalhamento === lembrete?.detalhamento;
+		const lembreteUnchanged = tituloUnchanged &&  detalhamentoUnchanged;
 
-			range.setStart(textBoxDetalhamento.current.childNodes[0],lembrete?.detalhamento?.length ?? 0);
-			range.collapse(true);
+		if(lembreteUnchanged) {
+			dispatch(setModalOpen(false));
+			return;
+		};
 
-			sel?.removeAllRanges();
-			sel?.addRange(range);
-		}
-	}, []);
+		dispatch(updateLembrete({
+			id: lembrete.id,
+			changes: {
+				descricao: titulo.current?.innerText,
+				detalhamento: detalhamento.current?.innerText
+			}
+		}));
+
+		enqueueSnackbar('Lembrete atualizado.', { variant: 'success', autoHideDuration: 2000 });
+		
+		dispatch(setModalOpen(false));
+	}
 	
 	return (
 		<Modal
 			open={modalOpen}
-			onClose={handleClose}
+			onClose={updateIfChanged}
 			aria-labelledby="modal-modal-title"
 			aria-describedby="modal-modal-description"
 		>
 			<Box sx={modalStyle}>
-				{ lembrete && <Edit /> }
+				{ lembrete && <Edit refs={{ titulo, detalhamento }} /> }
 			</Box>				
 		</Modal>
 	);

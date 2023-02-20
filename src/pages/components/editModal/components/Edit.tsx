@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { MutableRefObject, useEffect } from 'react';
 import { Box, IconButton } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../feature/store';
@@ -6,18 +6,16 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
 import useSafeRemove from '../../../../services/useSafeRemove';
 
-const Edit: React.FC = () => {
+const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>, detalhamento: MutableRefObject<HTMLElement | undefined>}}> = (props: {refs: { titulo: MutableRefObject<HTMLElement | undefined>, detalhamento: MutableRefObject<HTMLElement | undefined>}}) => {
 	const { lembrete } = useSelector((state: RootState) => state.editModalReducer);
-	const textBoxDetalhamento = useRef<HTMLDivElement>();
-	const textBoxTitulo = useRef<HTMLDivElement>();
 	const { safeRemove, safeArchive } = useSafeRemove();
 
 	useEffect(() => {
-		if(textBoxDetalhamento.current) {
+		if(props.refs.detalhamento.current) {
 			const range = document.createRange();
 			const sel = window.getSelection();
 
-			range.setStart(textBoxDetalhamento.current.childNodes[0],lembrete?.detalhamento?.length ?? 0);
+			range.setStart(props.refs.detalhamento.current.childNodes[0],lembrete?.detalhamento?.length ?? 0);
 			range.collapse(true);
 
 			sel?.removeAllRanges();
@@ -38,7 +36,7 @@ const Edit: React.FC = () => {
 	return (
 		<>
 			<Box 
-				ref={textBoxTitulo}
+				ref={props.refs.titulo}
 				component='div'
 				role='textbox'
 				contentEditable='true'
@@ -53,7 +51,7 @@ const Edit: React.FC = () => {
 			</Box>
 
 			<Box
-				ref={textBoxDetalhamento} 
+				ref={props.refs.detalhamento} 
 				component='div' 
 				role='textbox' 
 				contentEditable='true' 
