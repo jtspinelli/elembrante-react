@@ -9,7 +9,7 @@ import EditIcon from '@mui/icons-material/EditOutlined';
 import Lembrete from '../../../feature/Lembrete';
 import useSafeRemove from '../../../services/useSafeRemove';
 
-const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembrete }) => {
+const LembreteCard: React.FC<{lembrete: Lembrete, deleteonly: boolean}> = (props: { lembrete: Lembrete, deleteonly: boolean }) => {
 	const dispatch = useDispatch();
 	const { safeRemove, safeArchive } = useSafeRemove();
 	
@@ -27,8 +27,12 @@ const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembret
 		
 			<Actions id="action-area">
 				<IconButton onClick={() => { safeRemove(props.lembrete); }}> <DeleteIcon /> </IconButton>
-				<IconButton onClick={() => { safeArchive(props.lembrete); }}> <ArchiveIcon /> </IconButton>
-				<IconButton onClick={edit}> <EditIcon /> </IconButton>
+				{ !props.deleteonly &&
+					<>
+						<IconButton onClick={() => { safeArchive(props.lembrete); }}> <ArchiveIcon /> </IconButton>
+						<IconButton onClick={edit}> <EditIcon /> </IconButton>
+					</>					
+				}
 			</Actions>
 		</LembreteContainer>
 	);
