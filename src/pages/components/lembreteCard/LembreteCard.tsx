@@ -7,11 +7,11 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import Lembrete from '../../../feature/Lembrete';
-import useReverseDelete from '../../../services/useSafeRemove';
+import useSafeRemove from '../../../services/useSafeRemove';
 
 const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembrete }) => {
 	const dispatch = useDispatch();
-	const { safeRemove, safeArchive } = useReverseDelete();
+	const { safeRemove, safeArchive } = useSafeRemove();
 	
 	function edit(){
 		dispatch(setModalOpen(true)); 
@@ -26,7 +26,6 @@ const LembreteCard: React.FC<{lembrete: Lembrete}> = (props: { lembrete: Lembret
 			</Box>
 		
 			<Actions id="action-area">
-
 				<IconButton onClick={() => { safeRemove(props.lembrete); }}> <DeleteIcon /> </IconButton>
 				<IconButton onClick={() => { safeArchive(props.lembrete); }}> <ArchiveIcon /> </IconButton>
 				<IconButton onClick={edit}> <EditIcon /> </IconButton>

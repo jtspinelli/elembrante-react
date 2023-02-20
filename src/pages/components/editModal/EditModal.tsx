@@ -22,7 +22,7 @@ const EditModal: React.FC = () => {
 		const editDetalhamento = detalhamento.current?.innerText;
 		const tituloUnchanged = editTitulo === lembrete?.descricao;
 		const detalhamentoUnchanged = editDetalhamento === lembrete?.detalhamento;
-		const lembreteUnchanged = tituloUnchanged &&  detalhamentoUnchanged;
+		const lembreteUnchanged = tituloUnchanged && detalhamentoUnchanged;
 
 		if(lembreteUnchanged) {
 			dispatch(setModalOpen(false));
@@ -46,8 +46,8 @@ const EditModal: React.FC = () => {
 		<Modal
 			open={modalOpen}
 			onClose={updateIfChanged}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
+			aria-labelledby="edit-modal"
+			aria-describedby="modal for editing Lembrete"
 		>
 			<Box sx={modalStyle}>
 				{ lembrete && <Edit refs={{ titulo, detalhamento }} /> }

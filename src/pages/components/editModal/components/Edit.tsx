@@ -1,7 +1,8 @@
 import React, { MutableRefObject, useEffect } from 'react';
-import { Box, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../feature/store';
+import { Actions, TextBoxDetalhamento, TextBoxTitulo } from '../styles';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
 import useSafeRemove from '../../../../services/useSafeRemove';
@@ -10,18 +11,20 @@ const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>,
 	const { lembrete } = useSelector((state: RootState) => state.editModalReducer);
 	const { safeRemove, safeArchive } = useSafeRemove();
 
-	useEffect(() => {
-		if(props.refs.detalhamento.current) {
-			const range = document.createRange();
-			const sel = window.getSelection();
+	useEffect(positionCaret, []);
 
-			range.setStart(props.refs.detalhamento.current.childNodes[0],lembrete?.detalhamento?.length ?? 0);
-			range.collapse(true);
+	function positionCaret(){
+		if(!props.refs.detalhamento.current) return;
+		
+		const range = document.createRange();
+		const sel = window.getSelection();
 
-			sel?.removeAllRanges();
-			sel?.addRange(range);
-		}
-	}, []);
+		range.setStart(props.refs.detalhamento.current.childNodes[0],lembrete?.detalhamento?.length ?? 0);
+		range.collapse(true);
+
+		sel?.removeAllRanges();
+		sel?.addRange(range);
+	}
 
 	function remove(){
 		if(!lembrete) return;
@@ -35,37 +38,18 @@ const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>,
 
 	return (
 		<>
-			<Box 
-				ref={props.refs.titulo}
-				component='div'
-				role='textbox'
-				contentEditable='true'
-				suppressContentEditableWarning={true}
-				sx={{
-					padding: '12px 16px 5px 16px',
-					fontSize: '20px',
-					outline: 'none'
-				}}
-			>
+			<TextBoxTitulo ref={props.refs.titulo}>
 				{ lembrete && lembrete.descricao }
-			</Box>
+			</TextBoxTitulo>
 
-			<Box
-				ref={props.refs.detalhamento} 
-				component='div' 
-				role='textbox' 
-				contentEditable='true' 
-				suppressContentEditableWarning={true}
-				sx={{padding: '4px 16px 16px 16px', outline: 'none'}} 
-			> 
+			<TextBoxDetalhamento ref={props.refs.detalhamento}> 
 				{ lembrete && lembrete.detalhamento }
-			</Box>
+			</TextBoxDetalhamento>
 
-			<Box sx={{ display: 'flex', justifyContent: 'end', margin: '0 16px 12px' }}>
+			<Actions>
 				<IconButton onClick={remove}> <DeleteIcon /> </IconButton>
 				<IconButton onClick={archive}> <ArchiveIcon /> </IconButton>
-
-			</Box>
+			</Actions>
 		</> 
 	);
 };
