@@ -1,12 +1,16 @@
-import { Box } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
+import { Box, IconButton } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../feature/store';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
+import useSafeRemove from '../../../../services/useSafeRemove';
 
 const Edit: React.FC = () => {
 	const { lembrete } = useSelector((state: RootState) => state.editModalReducer);
 	const textBoxDetalhamento = useRef<HTMLDivElement>();
 	const textBoxTitulo = useRef<HTMLDivElement>();
+	const { safeRemove, safeArchive } = useSafeRemove();
 
 	useEffect(() => {
 		if(textBoxDetalhamento.current) {
@@ -20,6 +24,16 @@ const Edit: React.FC = () => {
 			sel?.addRange(range);
 		}
 	}, []);
+
+	function remove(){
+		if(!lembrete) return;
+		safeRemove(lembrete);
+	}
+
+	function archive(){
+		if(!lembrete) return;
+		safeArchive(lembrete);
+	}
 
 	return (
 		<>
@@ -47,6 +61,12 @@ const Edit: React.FC = () => {
 				sx={{padding: '4px 16px 16px 16px', outline: 'none'}} 
 			> 
 				{ lembrete && lembrete.detalhamento }
+			</Box>
+
+			<Box sx={{ display: 'flex', justifyContent: 'end', margin: '0 16px 12px' }}>
+				<IconButton onClick={remove}> <DeleteIcon /> </IconButton>
+				<IconButton onClick={archive}> <ArchiveIcon /> </IconButton>
+
 			</Box>
 		</> 
 	);
