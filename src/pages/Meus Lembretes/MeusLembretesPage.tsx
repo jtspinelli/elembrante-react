@@ -16,7 +16,7 @@ const MeusLembretesPage: React.FC = () => {
 	}
 
 	function getCard(lembrete: Lembrete){
-		return <LembreteCard lembrete={lembrete} key={lembrete.id} deleteonly={false}/>;
+		return <LembreteCard lembrete={lembrete} key={lembrete.id} showEdit={true}/>;
 	}
 
 	return <>

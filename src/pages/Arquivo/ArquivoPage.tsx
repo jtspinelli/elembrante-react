@@ -1,11 +1,11 @@
 import React from 'react';
-import { useTheme } from '@mui/material';
+import { LembretesSection } from '../Meus Lembretes/styles';
 import { useSelector } from 'react-redux';
 import { selectAll } from '../../feature/lembreteSlice';
+import { useTheme } from '@mui/material';
+import LembreteCard from '../components/lembreteCard/LembreteCard';
 import Typography from '@mui/material/Typography';
 import Lembrete from '../../feature/Lembrete';
-import LembreteCard from '../components/lembreteCard/LembreteCard';
-import { LembretesSection } from '../Meus Lembretes/styles';
 
 const ArquivoPage: React.FC = () => {
 	const theme = useTheme();
@@ -18,12 +18,12 @@ const ArquivoPage: React.FC = () => {
 	}
 
 	function getCard(lembrete: Lembrete){
-		return <LembreteCard lembrete={lembrete} key={lembrete.id} deleteonly={true} />;
+		return <LembreteCard lembrete={lembrete} key={lembrete.id} showEdit={false} />;
 	}
 
 	return (
 		<>
-			<Typography 
+			<Typography		
 				variant="h5" 
 				color={ theme.palette.grey[900] }
 				sx={{ marginBottom: '40px' }}
