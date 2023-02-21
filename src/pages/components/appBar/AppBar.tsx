@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useDispatch, useSelector } from 'react-redux';
-import { setOpen } from '../../../feature/sideBarSlice';
-import { RootState } from '../../../feature/store';
 import { AppBar, AppBarProps } from './styles';
+import { setLoggedUser } from '../../../feature/LoggedUserSlice';
+import { useNavigate } from 'react-router-dom';
+import { RootState } from '../../../feature/store';
+import { setOpen } from '../../../feature/sideBarSlice';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const CustomAppBar: React.FC<AppBarProps> = () => {	
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const [auth, setAuth] = useState(true);
 	const { open, width } = useSelector((state: RootState) => state.sideBarReducer);
+	const navigate = useNavigate();
 
 	const dispatch = useDispatch();
 
@@ -25,6 +27,11 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
+
+	function logout(){
+		dispatch(setLoggedUser(null));
+		navigate('/login');
+	}
 
 	return (
 		<AppBar position="fixed" open={open} drawerwidth={width}>
@@ -43,40 +50,38 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 					<Typography variant="h6" noWrap component="div">
             				Elembrante
 					</Typography>
-				</Box>				
-
-				{auth && (
-					<Box>
-						<IconButton
-							size="large"
-							aria-label="account of current user"
-							aria-controls="menu-appbar"
-							aria-haspopup="true"
-							onClick={handleMenu}
-							color="inherit"
-						>
-							<AccountCircle />
-						</IconButton>
-						<Menu
-							id="menu-appbar"
-							anchorEl={anchorEl}
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							open={Boolean(anchorEl)}
-							onClose={closeMenu}
-						>
-							<MenuItem onClick={closeMenu}>Minha conta</MenuItem>
-							<MenuItem onClick={closeMenu}>Sair</MenuItem>
-						</Menu>
-					</Box>
-				)}
+				</Box>
+				
+				<Box>
+					<IconButton
+						size="large"
+						aria-label="account of current user"
+						aria-controls="menu-appbar"
+						aria-haspopup="true"
+						onClick={handleMenu}
+						color="inherit"
+					>
+						<AccountCircle />
+					</IconButton>
+					<Menu
+						id="menu-appbar"
+						anchorEl={anchorEl}
+						anchorOrigin={{
+							vertical: 'top',
+							horizontal: 'right',
+						}}
+						keepMounted
+						transformOrigin={{
+							vertical: 'top',
+							horizontal: 'right',
+						}}
+						open={Boolean(anchorEl)}
+						onClose={closeMenu}
+					>
+						<MenuItem onClick={closeMenu}>Minha conta</MenuItem>
+						<MenuItem onClick={logout}>Sair</MenuItem>
+					</Menu>
+				</Box>			
 			</Toolbar>
 		</AppBar>
 	);
