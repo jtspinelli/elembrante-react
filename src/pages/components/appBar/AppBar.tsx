@@ -12,6 +12,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 const CustomAppBar: React.FC<AppBarProps> = () => {	
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const { open, width } = useSelector((state: RootState) => state.sideBarReducer);
+	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 	const navigate = useNavigate();
 
 	const dispatch = useDispatch();
@@ -33,6 +34,10 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 		navigate('/login');
 	}
 
+	function getLoggedUserFirstName(){
+		return loggedUser?.nome.split(' ')[0];
+	}
+
 	return (
 		<AppBar position="fixed" open={open} drawerwidth={width}>
 			<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -52,7 +57,8 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 					</Typography>
 				</Box>
 				
-				<Box>
+				<Box sx={{ display: 'flex', alignItems: 'center' }}>
+					<Typography>{getLoggedUserFirstName()}</Typography>
 					<IconButton
 						size="large"
 						aria-label="account of current user"
