@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Main } from './styles';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../feature/store';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { DrawerHeader } from '../components/drawer/styles';
 import { Box } from '@mui/material';
 import AppBar from '../components/appBar/AppBar';
@@ -13,6 +13,14 @@ import MeusLembretesPage from '../Meus Lembretes/MeusLembretesPage';
 
 const MainPage: React.FC = () => {
 	const { open, width } = useSelector((state: RootState) => state.sideBarReducer);
+	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
+	const navigate = useNavigate();
+
+	useEffect(redirectIfLoggedOut, []);
+
+	function redirectIfLoggedOut(){
+		if(!loggedUser) navigate('login');
+	}
 
 	return (
 		<Box sx={{ display: 'flex' }}>
