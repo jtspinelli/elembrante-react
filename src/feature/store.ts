@@ -4,17 +4,18 @@ import storage from 'redux-persist/es/storage';
 import lembreteSlice from './lembreteSlice';
 import sideBarSlice from './sideBarSlice';
 import editModalSlice from './editModalSlice';
+import UsersSlice from './usersSlice';
+import LoggedUserSlice from './LoggedUserSlice';
 
-const persistConfig = {
-	key: 'root',
-	storage,
-};
-
-const persistedReducer = persistReducer(persistConfig, lembreteSlice.reducer);
+const persistedReducer = persistReducer({ key: 'lembretes', storage }, lembreteSlice.reducer);
+const persistedUsers = persistReducer({ key:'users', storage }, UsersSlice.reducer);
+const persistedLoggedUser = persistReducer({key: 'loggedUser', storage}, LoggedUserSlice.reducer);
 
 const store = configureStore({
 	reducer: {
 		lembretesReducer: persistedReducer,
+		usersReducer: persistedUsers,
+		loggedUsersReducer: persistedLoggedUser,
 		sideBarReducer: sideBarSlice.reducer,
 		editModalReducer: editModalSlice.reducer
 	},
