@@ -2,6 +2,7 @@ import React from 'react';
 import { Actions, Detalhamento, LembreteContainer, Titulo } from './styles';
 import { setModalOpen, setLembrete } from '../../../feature/editModalSlice';
 import { Box, IconButton, Tooltip } from '@mui/material';
+import { LembreteCardProps } from './interface';
 import { updateLembrete } from '../../../feature/lembreteSlice';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -10,9 +11,8 @@ import useSafeRemove from '../../../services/useSafeRemove';
 import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
-import Lembrete from '../../../feature/Lembrete';
 
-const LembreteCard: React.FC<{lembrete: Lembrete, showEdit: boolean}> = (props: { lembrete: Lembrete, showEdit: boolean }) => {
+const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => {
 	const dispatch = useDispatch();
 	const { safeRemove, safeArchive } = useSafeRemove();
 	const { enqueueSnackbar } = useSnackbar();
@@ -34,7 +34,7 @@ const LembreteCard: React.FC<{lembrete: Lembrete, showEdit: boolean}> = (props: 
 	}
 
 	return (
-		<LembreteContainer>
+		<LembreteContainer archived={props.archived.toString()}>
 			<Box>
 				<Titulo> { props.lembrete.descricao } </Titulo>
 				<Detalhamento> { props.lembrete.detalhamento} </Detalhamento>

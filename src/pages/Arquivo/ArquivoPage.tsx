@@ -22,7 +22,7 @@ const ArquivoPage: React.FC = () => {
 	}
 
 	function getCard(lembrete: Lembrete){
-		return <LembreteCard lembrete={lembrete} key={lembrete.id} showEdit={false} />;
+		return <LembreteCard lembrete={lembrete} key={lembrete.id} showEdit={false} archived={true} />;
 	}
 
 	return (
