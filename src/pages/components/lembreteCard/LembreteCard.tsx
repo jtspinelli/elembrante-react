@@ -57,7 +57,7 @@ const LembreteCard: React.FC<{lembrete: Lembrete, showEdit: boolean}> = (props: 
 				}
 
 				{ !props.showEdit &&
-					<Tooltip title="desarquivar">
+					<Tooltip title="recuperar">
 						<IconButton onClick={bringBack}> <UnarchiveOutlinedIcon /> </IconButton>
 					</Tooltip>
 				}
