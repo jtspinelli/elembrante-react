@@ -1,52 +1,149 @@
 /* eslint-disable no-useless-escape */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { hasLetterRegex, hasNumberRegex, hasSpecialCharRegex, senhaRegex } from '../../../helpers/regex';
 import { Button, List, ListItem, TextField, Typography } from '@mui/material';
+import { IValidations, validationsInit } from './helpers';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { Actions, Form } from '../login/styles';
-import { Link } from 'react-router-dom';
+import { setLoggedUser } from '../../../feature/LoggedUserSlice';
+import { useSnackbar } from 'notistack';
+import { v4 as uuid } from 'uuid';
+import { RootState } from '../../../feature/store';
+import { selectAll } from '../../../feature/usersSlice';
+import { add } from '../../../feature/usersSlice';
+import User from '../../../feature/User';
 
 const Register: React.FC = () => {
+	/* #region States, Effects and Hooks */
+	const users = useSelector(selectAll);
 	const [nome, setNome] = useState<string>('');
 	const [ username, setUsername] = useState<string>('');
 	const [ senha, setSenha ] = useState<string>('');
 	const [ confirmSenha, setConfirmSenha] = useState<string>('');
-	const [ nomePass, setNomePass ] = useState<boolean>();
-	const [ usernamePass, setUsernamePass ] = useState<boolean>();
-	const [ senhaPass, setSenhaPass ] = useState<boolean>();
-	const [ senhaLengthPass, setSenhaLengthPass ] = useState<boolean>();
-	const [ senhaHasLetterPass, setSenhaHasLetterPass ] = useState<boolean>();
-	const [ senhaHasNumberPass, setSenhaHasNumberPass ] = useState<boolean>();
-	const [ senhaHasSpecialCharPass, setSenhaHasSpecialCharPass ] = useState<boolean>();
-	const [ confirmSenhaPass, setConfirmSenhaPass ] = useState<boolean>();
+	const [ validations, setValidations ] = useState<IValidations>(validationsInit);	
+	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
+	const { enqueueSnackbar } = useSnackbar();
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	
+	useEffect(redirectIfLoggedIn, [loggedUser]);
+
+	function redirectIfLoggedIn(){
+		if(loggedUser) navigate('/');
+	}
+	/* #endregion */
+
+	/* #region Checkers: Delegators */
+	function checkValidations(){
+		setValidations({
+			...validations,
+			nomePass: checkNomePass(),
+			usernamePass: checkUsernamePass(),
+			senha: {
+				lengthPass: checkSenhaLengthPass(),
+				hasLetterPass: checkSenhaHasLetterPass(),
+				hasNumberPass: checkSenhaHasNumberPass(),
+				hasSpecialCharPass: checkSenhaHasSpecialCharPass(),
+				senhaPass: checkSenhaPass()
+			}
+		});
+	}
+
+	function checkNome(){
+		setValidations({...validations, nomePass: checkNomePass()});
+	}
+	
+	function checkUsername(){
+		setValidations({...validations, usernamePass: checkUsernamePass()});
+	}
+
+	function checkSenha(){
+		setValidations({
+			...validations,
+			senha: {
+				lengthPass: checkSenhaLengthPass(),
+				hasLetterPass: checkSenhaHasLetterPass(),
+				hasNumberPass: checkSenhaHasNumberPass(),
+				hasSpecialCharPass: checkSenhaHasSpecialCharPass(),
+				senhaPass: checkSenhaPass()
+			},
+			...(confirmSenha.length && {
+				confirmSenhaPass: checkConfirmSenhaPass()
+			})
+		});
+	}
+
+	function checkConfirmSenha(){
+		setValidations({...validations, confirmSenhaPass: checkConfirmSenhaPass()});
+	}
+	/* #endregion */
+
+	/* #region Checkers: Logics */
+	function checkNomePass(){
+		return nome.length > 2;
+	}	
+
+	function checkUsernamePass(): string{
+		const lengthPass = username.length > 2;
+		const availablePass = users.find(u => u.username === username) === undefined;
+
+		if(!lengthPass) return 'false';
+		if(!availablePass) return 'unavailable';
+
+		return 'true';
+	}	
+
+	function checkSenhaLengthPass(){
+		return senha.length > 3;
+	}
+
+	function checkSenhaHasLetterPass(){
+		return senha.match(hasLetterRegex) !== null;
+	}
+
+	function checkSenhaHasNumberPass(){
+		return senha.match(hasNumberRegex) !== null;
+	}
+
+	function checkSenhaHasSpecialCharPass(){
+		return senha.match(hasSpecialCharRegex) !== null;
+	}
+
+	function checkSenhaPass(){
+		const senhaMatch = senha.match(senhaRegex);
+		return senhaMatch !== null && senhaMatch[0] === senha;
+	}	
+
+	function checkConfirmSenhaPass(){
+		return confirmSenha === senha;
+	}	
+	/* #endregion */
 
 	function criarConta(e: React.FormEvent<HTMLDivElement>){
 		e.preventDefault();
 
-		if(!nomePass || !usernamePass || !senhaPass || !confirmSenhaPass) return;
+		if(!validations.nomePass || validations.usernamePass !== 'true' || !validations.senha.senhaPass || !validations.confirmSenhaPass) {
+			checkValidations();
+			return;
+		};
 
-		alert('create!');
-	}
+		const newUser: User = {
+			id: uuid(),
+			nome,
+			username,
+			senha
+		};
 
-	function checkNome(){
-		setNomePass(nome.length > 2);
-	}
+		dispatch(add(newUser));
 
-	function checkUsername(){
-		setUsernamePass(username.length > 2);
-	}
+		enqueueSnackbar('Conta criada com sucesso!', { variant: 'success' });
 
-	function checkSenha(){
-		const senhaMatch = senha.match(senhaRegex);
-		setSenhaLengthPass(senha.length > 3);
-		setSenhaHasLetterPass(senha.match(hasLetterRegex) !== null);
-		setSenhaHasNumberPass(senha.match(hasNumberRegex) !== null);
-		setSenhaHasSpecialCharPass(senha.match(hasSpecialCharRegex) !== null);
-		checkConfirmSenha();
-		setSenhaPass(senhaMatch !== null && senhaMatch[0] === senha);
-	}
-
-	function checkConfirmSenha(){
-		setConfirmSenhaPass(confirmSenha === senha);
+		dispatch(setLoggedUser({
+			id: newUser.id,
+			nome: newUser.nome,
+			username: newUser.username
+		}));
 	}
 
 	return (
@@ -54,8 +151,8 @@ const Register: React.FC = () => {
 			<Typography variant='h4'> Criar conta </Typography>
 			<TextField 
 				onKeyUp={checkNome}
-				error={nomePass === false}
-				helperText={!nome.length && nomePass === false ? 'Preencha o campo' : nomePass === false ? 'Mínimo 3 dígitos.' : ''}
+				error={validations.nomePass === false}
+				helperText={!nome.length && validations.nomePass === false ? 'Preencha o campo' : validations.nomePass === false ? 'Mínimo 3 dígitos.' : ''}
 				sx={{ margin: '40px 0 0' }}
 				label='Digite seu nome'
 				onChange={(e) => setNome(e.target.value)}
@@ -63,37 +160,37 @@ const Register: React.FC = () => {
 
 			<TextField 
 				onKeyUp={checkUsername}
-				error={usernamePass === false}
-				helperText={!username.length && usernamePass === false ? 'Preencha o campo.' : usernamePass === false ? 'Mínimo 3 dígitos.' : ''}
+				error={['false', 'unavailable'].includes(validations.usernamePass)}
+				helperText={!username.length && validations.usernamePass === 'false' ? 'Preencha o campo.' : validations.usernamePass === 'unavailable' ? 'Nome de usuário não disponível' : validations.usernamePass === 'false' ? 'Mínimo 3 dígitos.' : ''}
 				sx={{ margin: '40px 0 0', input: { textTransform: 'lowercase' } }}
 				label='Nome de usuário'
 				value={username}
 				onChange={(e) => {
-					const result = (e.target as HTMLInputElement).value.replace(/[^a-z]/gi, '').toLowerCase();
+					const result = (e.target as HTMLInputElement).value.replace(/[^a-z._]/gi, '').toLowerCase();
 					setUsername(result);
 				}}
 			/>
 
 			<TextField 
 				onKeyUp={checkSenha}
-				error={senhaPass === false}
+				error={validations.senha.senhaPass === false}
 				sx={{ margin: '40px 0 0' }}
 				label='Senha'
 				type='password'
 				onChange={(e) => setSenha(e.target.value)}
 			/>
-			{senhaPass === false && 
+			{validations.senha.senhaPass === false && 
 				<List sx={{ fontSize: '0.75rem', color: '#f44336', paddingTop: '3px', li: { padding: '0 0 0 14px' } }}>
-					{!senha.length && senhaPass === false &&
+					{!senha.length && validations.senha.senhaPass === false &&
 						<ListItem>Preencha o campo.</ListItem>
 					}
 
-					{senha.length > 0 && senhaPass === false &&
+					{senha.length > 0 && validations.senha.senhaPass === false &&
 						<>
-							<ListItem sx={{ color: senhaLengthPass ? 'green' : 'unset' }}> {senhaLengthPass && <span style={{marginRight: '5px'}}>✓</span>} Mínimo 4 dígitos.</ListItem>
-							<ListItem sx={{ color: senhaHasLetterPass ? 'green' : 'unset' }}> {senhaHasLetterPass && <span style={{marginRight: '5px'}}>✓</span>} Ao menos uma letra.</ListItem>
-							<ListItem sx={{ color: senhaHasNumberPass ? 'green' : 'unset' }}> {senhaHasNumberPass && <span style={{marginRight: '5px'}}>✓</span>}Ao menos um número.</ListItem>
-							<ListItem sx={{ color: senhaHasSpecialCharPass ? 'green' : 'unset' }}>{senhaHasSpecialCharPass && <span style={{marginRight: '5px'}}>✓</span>} Ao menos um caractere especial.</ListItem>
+							<ListItem sx={{ color: validations.senha.lengthPass ? 'green' : 'unset' }}> {validations.senha.lengthPass && <span style={{marginRight: '5px'}}>✓</span>} Mínimo 4 dígitos.</ListItem>
+							<ListItem sx={{ color: validations.senha.hasLetterPass ? 'green' : 'unset' }}> {validations.senha.hasLetterPass && <span style={{marginRight: '5px'}}>✓</span>} Ao menos uma letra.</ListItem>
+							<ListItem sx={{ color: validations.senha.hasNumberPass ? 'green' : 'unset' }}> {validations.senha.hasNumberPass && <span style={{marginRight: '5px'}}>✓</span>}Ao menos um número.</ListItem>
+							<ListItem sx={{ color: validations.senha.hasSpecialCharPass ? 'green' : 'unset' }}>{validations.senha.hasSpecialCharPass && <span style={{marginRight: '5px'}}>✓</span>} Ao menos um caractere especial.</ListItem>
 						</>
 					}					
 				</List>
@@ -101,8 +198,8 @@ const Register: React.FC = () => {
 
 			<TextField
 				onKeyUp={checkConfirmSenha}
-				error={confirmSenhaPass === false}
-				helperText={!confirmSenha.length && confirmSenhaPass === false ? 'Preencha o campo.' : confirmSenhaPass === false ? 'Campos de senha devem ser iguais.' : ''}
+				error={validations.confirmSenhaPass === false}
+				helperText={!confirmSenha.length && validations.confirmSenhaPass === false ? 'Preencha o campo.' : validations.confirmSenhaPass === false ? 'Campos de senha devem ser iguais.' : ''}
 				sx={{ margin: '40px 0' }}
 				label='Repita a senha'
 				type='password'
