@@ -1,11 +1,11 @@
 import React, { MutableRefObject, useEffect } from 'react';
-import { IconButton } from '@mui/material';
+import { Actions, TextBoxDetalhamento, TextBoxTitulo } from '../styles';
+import { IconButton, Tooltip } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../feature/store';
-import { Actions, TextBoxDetalhamento, TextBoxTitulo } from '../styles';
-import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
 import useSafeRemove from '../../../../services/useSafeRemove';
+import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>, detalhamento: MutableRefObject<HTMLElement | undefined>}}> = (props: {refs: { titulo: MutableRefObject<HTMLElement | undefined>, detalhamento: MutableRefObject<HTMLElement | undefined>}}) => {
 	const { lembrete } = useSelector((state: RootState) => state.editModalReducer);
@@ -47,8 +47,13 @@ const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>,
 			</TextBoxDetalhamento>
 
 			<Actions>
-				<IconButton onClick={remove}> <DeleteIcon /> </IconButton>
-				<IconButton onClick={archive}> <ArchiveIcon /> </IconButton>
+				<Tooltip title='excluir'>
+					<IconButton onClick={remove}> <DeleteIcon /> </IconButton>
+				</Tooltip>
+
+				<Tooltip title='arquivar'>
+					<IconButton onClick={archive}> <ArchiveIcon /> </IconButton>
+				</Tooltip>
 			</Actions>
 		</> 
 	);
