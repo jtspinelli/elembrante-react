@@ -1,7 +1,7 @@
 import React from 'react';
 import { Actions, Detalhamento, LembreteContainer, Titulo } from './styles';
 import { setModalOpen, setLembrete } from '../../../feature/editModalSlice';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import { updateLembrete } from '../../../feature/lembreteSlice';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -41,16 +41,25 @@ const LembreteCard: React.FC<{lembrete: Lembrete, showEdit: boolean}> = (props: 
 			</Box>
 		
 			<Actions id="action-area">
-				<IconButton onClick={() => { safeRemove(props.lembrete); }}> <DeleteIcon /> </IconButton>
+				<Tooltip title="excluir">
+					<IconButton onClick={() => { safeRemove(props.lembrete); }}> <DeleteIcon /> </IconButton>
+				</Tooltip>
 				{ props.showEdit &&
 					<>
-						<IconButton onClick={() => { safeArchive(props.lembrete); }}> <ArchiveIcon /> </IconButton>
-						<IconButton onClick={edit}> <EditIcon /> </IconButton>
+						<Tooltip title="arquivar">
+							<IconButton onClick={() => { safeArchive(props.lembrete); }}> <ArchiveIcon /> </IconButton>
+						</Tooltip>
+
+						<Tooltip title="editar">
+							<IconButton onClick={edit}> <EditIcon /> </IconButton>
+						</Tooltip>
 					</>					
 				}
 
 				{ !props.showEdit &&
-					<IconButton onClick={bringBack}> <UnarchiveOutlinedIcon /> </IconButton>
+					<Tooltip title="desarquivar">
+						<IconButton onClick={bringBack}> <UnarchiveOutlinedIcon /> </IconButton>
+					</Tooltip>
 				}
 			</Actions>
 		</LembreteContainer>
