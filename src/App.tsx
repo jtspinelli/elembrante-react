@@ -1,13 +1,15 @@
 import React from 'react';
-import { ThemeProvider } from '@mui/material';
-import { RouterProvider } from 'react-router';
 import { createBrowserRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
-import theme from './theme';
+import { RouterProvider } from 'react-router';
+import { ThemeProvider } from '@mui/material';
+import LoginPage from './pages/Login/LoginPage';
 import MainPage from './pages/Main/MainPage';
+import theme from './theme';
 
 const router = createBrowserRouter([
-	{ path: '/*', element: <MainPage />}
+	{ path: '/*', element: <MainPage />},
+	{ path: '/login/*', element: <LoginPage />}
 ]);
 
 const App = () => {
