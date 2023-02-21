@@ -1,15 +1,17 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectAll } from '../../feature/lembreteSlice';
 import { FormSection, LembretesSection } from './styles';
-import Form from '../components/form/Form';
-import Lembrete from '../../feature/Lembrete';
-import LembreteCard from '../components/lembreteCard/LembreteCard';
+import { Typography, useTheme } from '@mui/material';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../feature/store';
+import { selectAll } from '../../feature/lembreteSlice';
+import LembreteCard from '../components/lembreteCard/LembreteCard';
+import Lembrete from '../../feature/Lembrete';
+import Form from '../components/form/Form';
 
 const MeusLembretesPage: React.FC = () => {
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 	const lembretes = useSelector(selectAll);
+	const theme = useTheme();
 
 	function getLembretes(){
 		if(!loggedUser) return [];
@@ -30,6 +32,10 @@ const MeusLembretesPage: React.FC = () => {
 
 		<LembretesSection>
 			{ getLembretes().map(getCard) }
+
+			{ !getLembretes().length &&
+				<Typography color={theme.palette.grey[700]}>Use o campo acima para criar um novo Lembrete!</Typography>
+			}
 		</LembretesSection>
 
 	</>;

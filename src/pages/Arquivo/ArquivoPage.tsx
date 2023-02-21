@@ -13,7 +13,6 @@ const ArquivoPage: React.FC = () => {
 	const lembretes = useSelector(selectAll);
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 
-
 	function getLembretes(){
 		if(!loggedUser) return [];
 
@@ -38,6 +37,10 @@ const ArquivoPage: React.FC = () => {
 
 			<LembretesSection>
 				{ getLembretes().map(getCard) }
+
+				{ !getLembretes().length && 
+					<Typography color={theme.palette.grey[700]}>Nenhum lembrete arquivado.</Typography>
+				}
 			</LembretesSection>
 		</>
 	);
