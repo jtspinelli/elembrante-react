@@ -1,6 +1,7 @@
 import React from 'react';
 import { LembretesSection } from '../Meus Lembretes/styles';
 import { useSelector } from 'react-redux';
+import { RootState } from '../../feature/store';
 import { selectAll } from '../../feature/lembreteSlice';
 import { useTheme } from '@mui/material';
 import LembreteCard from '../components/lembreteCard/LembreteCard';
@@ -10,11 +11,15 @@ import Lembrete from '../../feature/Lembrete';
 const ArquivoPage: React.FC = () => {
 	const theme = useTheme();
 	const lembretes = useSelector(selectAll);
+	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
+
 
 	function getLembretes(){
+		if(!loggedUser) return [];
+
 		return lembretes
-			.sort((a: Lembrete, b: Lembrete) => b.criadoEm > a.criadoEm ? 1 : -1)
-			.filter(lembrete => lembrete.excluido);
+			.filter(lembrete => lembrete.userId === loggedUser.id && lembrete.excluido)
+			.sort((a: Lembrete, b: Lembrete) => b.criadoEm > a.criadoEm ? 1 : -1);
 	}
 
 	function getCard(lembrete: Lembrete){
