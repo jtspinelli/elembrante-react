@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Actions, Container, Form, transitionDuration } from './styles';
 import { Typography, TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { setLoggedUser } from '../../../feature/LoggedUserSlice';
 import { defaultUsers } from '../../../helpers/defaultUsers';
 import { useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../../feature/store';
 import { selectAll } from '../../../feature/usersSlice';
 import { addAll } from '../../../feature/usersSlice';
@@ -116,7 +116,9 @@ const Login: React.FC = () => {
 				/>
 
 				<Actions>
-					<Button>Criar conta</Button>				
+					<Link to={'/login/cadastro'}>
+						<Button>Criar conta</Button>
+					</Link>				
 					<Button type='submit' variant='contained'>Avançar</Button>
 				</Actions>
 			</Form>

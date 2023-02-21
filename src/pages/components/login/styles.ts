@@ -24,5 +24,8 @@ Form.defaultProps = {
 
 export const Actions = styled(Box)({
 	display: 'flex',
-	justifyContent: 'space-between'
+	justifyContent: 'space-between',
+	'& a': {
+		textDecoration: 'none'
+	}
 });
