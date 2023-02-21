@@ -4,6 +4,7 @@ interface Lembrete {
   detalhamento: string | null;
   criadoEm: Date;
   excluido: boolean;
+  userId: string;
 }
 
 export default Lembrete;
