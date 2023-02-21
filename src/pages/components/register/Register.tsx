@@ -1,7 +1,8 @@
 /* eslint-disable no-useless-escape */
 import React, { useEffect, useState } from 'react';
-import { hasLetterRegex, hasNumberRegex, hasSpecialCharRegex, senhaRegex } from '../../../helpers/regex';
-import { Button, List, ListItem, TextField, Typography } from '@mui/material';
+import { ConfirmSenhaTextField, NomeTextField, SenhaTextField, SenhaTextHelperList, UsernameTextField, ValidationListItem } from './styles';
+import { hasLetterRegex, hasNumberRegex, hasSpecialCharRegex, senhaRegex, usernameRegex } from '../../../helpers/regex';
+import { Button, ListItem, Typography } from '@mui/material';
 import { IValidations, validationsInit } from './helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -120,6 +121,42 @@ const Register: React.FC = () => {
 	}	
 	/* #endregion */
 
+	/* #region Inputs Error Helper Text Getters */
+	function getNomeInputHelperText(){
+		return !nome.length && validations.nomePass === false 
+			? 'Preencha o campo' 
+			: validations.nomePass === false 
+				? 'Mínimo 3 dígitos.' 
+				: '';
+	}
+
+	function getUsernameInputHelperText(){
+		return !username.length && validations.usernamePass === 'false' 
+			? 'Preencha o campo.' 
+			: validations.usernamePass === 'unavailable' 
+				? 'Nome de usuário não disponível' 
+				: validations.usernamePass === 'false' 
+					? 'Mínimo 3 dígitos.' 
+					: '';
+	}
+
+	function getConfirmSenhaInputHelperText(){
+		return !confirmSenha.length && validations.confirmSenhaPass === false 
+			? 'Preencha o campo.' 
+			: validations.confirmSenhaPass === false 
+				? 'Campos de senha devem ser iguais.' 
+				: '';
+	}
+
+	function senhaEmptyAfterTyping(){
+		return !senha.length && validations.senha.senhaPass === false;
+	}
+
+	function senhaValueIsInvalid(){
+		return senha.length > 0 && validations.senha.senhaPass === false;
+	}
+	/* #endregion */
+
 	function criarConta(e: React.FormEvent<HTMLDivElement>){
 		e.preventDefault();
 
@@ -149,60 +186,49 @@ const Register: React.FC = () => {
 	return (
 		<Form onSubmit={criarConta}>
 			<Typography variant='h4'> Criar conta </Typography>
-			<TextField 
+
+			<NomeTextField 
 				onKeyUp={checkNome}
 				error={validations.nomePass === false}
-				helperText={!nome.length && validations.nomePass === false ? 'Preencha o campo' : validations.nomePass === false ? 'Mínimo 3 dígitos.' : ''}
-				sx={{ margin: '40px 0 0' }}
-				label='Digite seu nome'
+				helperText={getNomeInputHelperText()}
 				onChange={(e) => setNome(e.target.value)}
 			/>
 
-			<TextField 
+			<UsernameTextField 
 				onKeyUp={checkUsername}
 				error={['false', 'unavailable'].includes(validations.usernamePass)}
-				helperText={!username.length && validations.usernamePass === 'false' ? 'Preencha o campo.' : validations.usernamePass === 'unavailable' ? 'Nome de usuário não disponível' : validations.usernamePass === 'false' ? 'Mínimo 3 dígitos.' : ''}
-				sx={{ margin: '40px 0 0', input: { textTransform: 'lowercase' } }}
-				label='Nome de usuário'
+				helperText={getUsernameInputHelperText()}
 				value={username}
 				onChange={(e) => {
-					const result = (e.target as HTMLInputElement).value.replace(/[^a-z._]/gi, '').toLowerCase();
+					const result = (e.target as HTMLInputElement).value.replace(usernameRegex, '').toLowerCase();
 					setUsername(result);
 				}}
 			/>
 
-			<TextField 
+			<SenhaTextField 
 				onKeyUp={checkSenha}
 				error={validations.senha.senhaPass === false}
-				sx={{ margin: '40px 0 0' }}
-				label='Senha'
-				type='password'
 				onChange={(e) => setSenha(e.target.value)}
 			/>
 			{validations.senha.senhaPass === false && 
-				<List sx={{ fontSize: '0.75rem', color: '#f44336', paddingTop: '3px', li: { padding: '0 0 0 14px' } }}>
-					{!senha.length && validations.senha.senhaPass === false &&
-						<ListItem>Preencha o campo.</ListItem>
-					}
+				<SenhaTextHelperList>
+					{ senhaEmptyAfterTyping() && <ListItem>Preencha o campo.</ListItem> }
 
-					{senha.length > 0 && validations.senha.senhaPass === false &&
+					{ senhaValueIsInvalid() &&
 						<>
-							<ListItem sx={{ color: validations.senha.lengthPass ? 'green' : 'unset' }}> {validations.senha.lengthPass && <span style={{marginRight: '5px'}}>✓</span>} Mínimo 4 dígitos.</ListItem>
-							<ListItem sx={{ color: validations.senha.hasLetterPass ? 'green' : 'unset' }}> {validations.senha.hasLetterPass && <span style={{marginRight: '5px'}}>✓</span>} Ao menos uma letra.</ListItem>
-							<ListItem sx={{ color: validations.senha.hasNumberPass ? 'green' : 'unset' }}> {validations.senha.hasNumberPass && <span style={{marginRight: '5px'}}>✓</span>}Ao menos um número.</ListItem>
-							<ListItem sx={{ color: validations.senha.hasSpecialCharPass ? 'green' : 'unset' }}>{validations.senha.hasSpecialCharPass && <span style={{marginRight: '5px'}}>✓</span>} Ao menos um caractere especial.</ListItem>
+							<ValidationListItem validator={validations.senha.lengthPass ? 1 : 0}> Mínimo 4 dígitos. </ValidationListItem>
+							<ValidationListItem validator={validations.senha.hasLetterPass ? 1 : 0}> Ao menos uma letra. </ValidationListItem>
+							<ValidationListItem validator={validations.senha.hasNumberPass ? 1 : 0}> Ao menos um número. </ValidationListItem>
+							<ValidationListItem validator={validations.senha.hasSpecialCharPass ? 1 : 0}> Ao menos um caractere especial. </ValidationListItem>
 						</>
 					}					
-				</List>
+				</SenhaTextHelperList>
 			}
 
-			<TextField
+			<ConfirmSenhaTextField
 				onKeyUp={checkConfirmSenha}
 				error={validations.confirmSenhaPass === false}
-				helperText={!confirmSenha.length && validations.confirmSenhaPass === false ? 'Preencha o campo.' : validations.confirmSenhaPass === false ? 'Campos de senha devem ser iguais.' : ''}
-				sx={{ margin: '40px 0' }}
-				label='Repita a senha'
-				type='password'
+				helperText={getConfirmSenhaInputHelperText()}
 				onChange={(e) => setConfirmSenha(e.target.value)}
 			/>
 
