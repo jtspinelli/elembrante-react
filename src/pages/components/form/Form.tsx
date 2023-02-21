@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { BoxDetalhamento, BoxTitulo, CustomPaper, Placeholder, TextBoxDetalhamento, TextBoxTitulo } from './styles';
 import { v4 as uuid } from 'uuid';
 import { addLembrete } from '../../../feature/lembreteSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import Lembrete from '../../../feature/Lembrete';
+import { RootState } from '../../../feature/store';
 
 const Form: React.FC = () => {
+	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 	const [ formExpanded, _setFormExpanded ] = useState<boolean>(false);
 	const [ showPlaceholder, setShowPlaceholder ] = useState<{titulo: boolean, detalhamento: boolean}>({titulo: true, detalhamento: true});
 	const formIsExpanded = useRef(formExpanded);
@@ -36,12 +38,15 @@ const Form: React.FC = () => {
 	};
 
 	function createLembrete(){
+		if(!loggedUser) return;
+		
 		const lembrete: Lembrete = {
 			id: uuid(),
 			criadoEm: new Date(),
 			descricao: tituloTextbox.current?.innerText.length ? tituloTextbox.current?.innerText : null,
 			detalhamento: detalhamentoTextbox.current?.innerText.length ? detalhamentoTextbox.current?.innerText : null,
-			excluido: false
+			excluido: false,
+			userId: loggedUser.id
 		};
 
 		dispatch(addLembrete(lembrete));
