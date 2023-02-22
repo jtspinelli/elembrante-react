@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Actions, Container, Form, transitionDuration } from './styles';
-import { Typography, TextField, Button, Box, useTheme } from '@mui/material';
+import { Typography, TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { setLoggedUser } from '../../../feature/LoggedUserSlice';
@@ -10,7 +10,6 @@ import { RootState } from '../../../feature/store';
 import { selectAll } from '../../../feature/usersSlice';
 import { addAll } from '../../../feature/usersSlice';
 import User from '../../../feature/User';
-import AppIcon from '../AppIcon/AppIcon';
 import Logo from '../Logo/Logo';
 
 const Login: React.FC = () => {
@@ -25,7 +24,6 @@ const Login: React.FC = () => {
 	const { enqueueSnackbar } = useSnackbar();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const theme = useTheme();
 	/* #endregion */
 
 	/* #region Effects */
