@@ -29,10 +29,13 @@ export const Detalhamento = styled(Box)({
 	padding: '10px 16px 16px'
 });
 
-export const Actions = styled(Box)({
+export const Actions = styled(Box)(({theme})=>({
 	display: 'flex',
 	justifyContent: 'end',
 	transition: '.22s',
 	transitionTimingFunction: 'ease-in', 
-	opacity: '0'
-});
+	opacity: '0',
+	'& .MuiButtonBase-root:hover': {
+		color: theme.palette.primary.main
+	}
+}));

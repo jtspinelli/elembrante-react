@@ -8,6 +8,7 @@ import { RootState } from '../../../feature/store';
 import { setOpen } from '../../../feature/sideBarSlice';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
+import AppIcon from '../AppIcon/AppIcon';
 
 const CustomAppBar: React.FC<AppBarProps> = () => {	
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -51,8 +52,10 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 					>
 						<MenuIcon />
 					</IconButton>
+					
+					<AppIcon colorDefault={false} />
 
-					<Typography variant="h6" noWrap component="div">
+					<Typography variant="h6" noWrap component="div" sx={{ marginLeft: '10px' }}>
             				Elembrante
 					</Typography>
 				</Box>

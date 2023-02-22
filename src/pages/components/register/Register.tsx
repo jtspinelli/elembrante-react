@@ -14,6 +14,7 @@ import { RootState } from '../../../feature/store';
 import { selectAll } from '../../../feature/usersSlice';
 import { add } from '../../../feature/usersSlice';
 import User from '../../../feature/User';
+import Logo from '../Logo/Logo';
 
 const Register: React.FC = () => {
 	/* #region States, Effects and Hooks */
@@ -185,6 +186,8 @@ const Register: React.FC = () => {
 
 	return (
 		<Form onSubmit={criarConta}>
+			<Logo />
+
 			<Typography variant='h4'> Criar conta </Typography>
 
 			<NomeTextField 

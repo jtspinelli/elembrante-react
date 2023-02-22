@@ -36,8 +36,11 @@ TextBoxDetalhamento.defaultProps = {
 	suppressContentEditableWarning: true
 };
 
-export const Actions = styled(Box)({
+export const Actions = styled(Box)(({theme})=>({
 	display: 'flex', 
 	justifyContent: 'end', 
-	margin: '0 16px 12px'
-});
+	margin: '0 16px 12px',
+	'& .MuiButtonBase-root:hover': {
+		color: theme.palette.primary.main
+	}
+}));
