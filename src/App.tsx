@@ -9,7 +9,9 @@ import theme from './theme';
 
 const router = createBrowserRouter([
 	{ path: '/*', element: <MainPage />},
-	{ path: '/login/*', element: <LoginPage />}
+	{ path: '/login/*', element: <LoginPage />},
+	{ path: '/oauth2callback', element: <LoginPage /> }
+
 ]);
 
 const App = () => {
