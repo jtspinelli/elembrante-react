@@ -24,7 +24,8 @@ export 	const modalStyle = {
 export const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
 	open?: boolean;
 	drawerwidth: string;
-  }>(({ theme, open, drawerwidth }) => ({
+	upsm?: number;
+  }>(({ theme, open, drawerwidth, upsm }) => ({
   	flexGrow: 1,
   	padding: theme.spacing(3),
   	transition: theme.transitions.create('margin', {
@@ -32,7 +33,7 @@ export const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open
 	  duration: theme.transitions.duration.leavingScreen,
   	}),
   	marginLeft: `-${drawerwidth}`,
-  	...(open && {
+  	...(open && upsm && {
 	  transition: theme.transitions.create('margin', {
   			easing: theme.transitions.easing.easeOut,
   			duration: theme.transitions.duration.enteringScreen,
