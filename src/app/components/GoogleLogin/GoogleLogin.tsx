@@ -70,7 +70,8 @@ const GoogleLogin: React.FC = () => {
 			onSuccess={onSuccess}
 			onFailure={onFailure}
 			buttonText='OAuth2_GoogleLogin'
-			className='googleLoginBtn'	
+			className='googleLoginBtn'
+			isCrossOrigin={true}	
 		/>	
 	);
 };
