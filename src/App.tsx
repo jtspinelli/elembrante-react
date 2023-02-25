@@ -3,8 +3,8 @@ import { createBrowserRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import { RouterProvider } from 'react-router';
 import { ThemeProvider } from '@mui/material';
-import LoginPage from './pages/Login/LoginPage';
-import MainPage from './pages/Main/MainPage';
+import LoginPage from './app/pages/Login/LoginPage';
+import MainPage from './app/pages/Main/MainPage';
 import theme from './theme';
 
 const router = createBrowserRouter([
