@@ -72,7 +72,7 @@ const GoogleLogin: React.FC = () => {
 			authorizationUrl='https://accounts.google.com/o/oauth2/auth'
 			responseType='token'
 			clientId='***REMOVED***'				
-			redirectUri='http://localhost:3000/oauth2callback'
+			redirectUri='http://localhost:3000/login'
 			scope='https://www.googleapis.com/auth/userinfo.email'
 			onSuccess={onSuccess}
 			onFailure={onFailure}
