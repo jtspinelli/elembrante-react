@@ -8,10 +8,16 @@ export const Page = styled(Box)({
 	alignItems: 'center',
 });
 
-export const Container = styled(Box)({
+const smallWidthContainerStyles = {
+	width: '100%',
+	border: 'none'
+};
+
+export const Container = styled(Box)(({theme}) => ({
 	width: '450px',
 	padding: '48px 0',
 	borderRadius: '8px',
 	border: '1px solid gainsboro',
-	overflow: 'hidden'
-});
+	overflow: 'hidden',
+	[theme.breakpoints.down('sm')]: smallWidthContainerStyles
+}));

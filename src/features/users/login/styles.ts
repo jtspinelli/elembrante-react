@@ -13,13 +13,18 @@ export const Container = styled(Box)(( { theme }) => ({
 	position: 'relative'
 }));
 
-export const Form = styled(Box)({
+const smallWidthScreensFormStyles = {
+	padding: '0 24px'
+};
+
+export const Form = styled(Box)(({theme}) => ({
 	display: 'flex',
 	flexDirection: 'column',
 	justifyContent: 'center',
 	width: '100%',
-	padding: '0 48px'
-});
+	padding: '0 48px',
+	[theme.breakpoints.down('sm')]: smallWidthScreensFormStyles
+}));
 Form.defaultProps = {
 	component: 'form'
 };
