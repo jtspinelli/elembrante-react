@@ -70,7 +70,7 @@ const Login: React.FC = () => {
 	function goToPasswordStep(){
 		if(!componentsContainer.current) return;
 
-		componentsContainer.current.style.marginLeft = '-450px';
+		componentsContainer.current.style.marginLeft = '-100%';
 		setTimeout(() => { textFieldSenha.current?.focus();}, transitionDuration);
 	}
 
