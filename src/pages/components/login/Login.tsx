@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Actions, Container, Form, transitionDuration } from './styles';
+import { Actions, ButtonGoogleLogin, Container, Form, transitionDuration } from './styles';
 import { Typography, TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,6 +9,8 @@ import { useSnackbar } from 'notistack';
 import { RootState } from '../../../feature/store';
 import { selectAll } from '../../../feature/usersSlice';
 import { addAll } from '../../../feature/usersSlice';
+import GoogleLogo from '../../../images/Google__G__Logo.svg';
+import GoogleLogin from '../googleLogin/GoogleLogin';
 import User from '../../../feature/User';
 import Logo from '../Logo/Logo';
 
@@ -49,6 +51,12 @@ const Login: React.FC = () => {
 	/* #region LoginForm Navigation */
 	function next(e: React.FormEvent<HTMLDivElement>){
 		e.preventDefault();		
+
+		if(!username.length) {
+			enqueueSnackbar('Informe um nome de usuário');
+			return;
+		}
+
 		textFieldUsername.current?.blur();		
 		const foundUser = users.find(u => u.username === username);
 
@@ -78,13 +86,14 @@ const Login: React.FC = () => {
 
 	/* #region Authentication/Login */
 	function authenticate(user: User): boolean{
-		if(user?.senha !== senha) {
+		const senhaIncorretaOuVazia = user.senha !== senha || !senha.length;
+		if(senhaIncorretaOuVazia) {
 			enqueueSnackbar('Senha incorreta.', {
 				variant: 'error'
 			});
 			return false;
 		}
-		return true;		
+		return true;
 	}
 
 	function login(e: React.FormEvent<HTMLDivElement>){
@@ -100,50 +109,62 @@ const Login: React.FC = () => {
 			username: user.username
 		}));
 	}
-	/* #endregion */
+
+	function initGoogleLogin(){
+		(document.querySelector('button.googleLoginBtn') as HTMLButtonElement).click();
+	}
+	/* #endregion */	
 
 	return (
-		<Container ref={componentsContainer}>
-			<Form onSubmit={next}>
-				<Logo />
+		<>
+			<GoogleLogin />
 
-				<Typography variant="h4">Login</Typography>
+			<ButtonGoogleLogin onClick={initGoogleLogin}>
+				<img src={GoogleLogo} /> Entrar com Google
+			</ButtonGoogleLogin>
+			
+			<Container ref={componentsContainer}>
+				<Form onSubmit={next}>
+					<Logo />
 
-				<TextField
-					inputRef={textFieldUsername}
-					inputProps={{tabIndex: -1}}
-					label="Usuário" 
-					sx={{ margin: '40px 0' }} 
-					value={username}
-					onChange={(e) => setUsername(e.target.value)}
-				/>
+					<Typography variant="h4">Login</Typography>
 
-				<Actions>
-					<Link to={'/login/cadastro'}>
-						<Button>Criar conta</Button>
-					</Link>				
-					<Button type='submit' variant='contained'>Avançar</Button>
-				</Actions>
-			</Form>
+					<TextField
+						inputRef={textFieldUsername}
+						inputProps={{tabIndex: -1}}
+						label="Usuário" 
+						sx={{ margin: '40px 0' }} 
+						value={username}
+						onChange={(e) => setUsername(e.target.value)}
+					/>
 
-			<Form onSubmit={login}>
-				<Typography variant="h5">Olá, {username}!</Typography>
+					<Actions>
+						<Link to={'/login/cadastro'}>
+							<Button>Criar conta</Button>
+						</Link>
+						<Button type='submit' variant='contained'>Avançar</Button>					
+					</Actions>
+				</Form>
 
-				<TextField 
-					inputRef={textFieldSenha}
-					label="Digite sua senha" 
-					sx={{ margin: '40px 0' }} 
-					value={senha}
-					type='password'
-					onChange={(e) => setSenha(e.target.value)}
-				/>
+				<Form onSubmit={login}>
+					<Typography variant="h5">Olá, {username.split('@')[0]}!</Typography>
 
-				<Actions>
-					<Button onClick={back}>Voltar</Button>				
-					<Button type='submit' variant='contained'>Avançar</Button>
-				</Actions>
-			</Form>
-		</Container>
+					<TextField 
+						inputRef={textFieldSenha}
+						label="Digite sua senha" 
+						sx={{ margin: '40px 0' }} 
+						value={senha}
+						type='password'
+						onChange={(e) => setSenha(e.target.value)}
+					/>
+
+					<Actions>
+						<Button onClick={back}>Voltar</Button>				
+						<Button type='submit' variant='contained'>Avançar</Button>
+					</Actions>
+				</Form>
+			</Container>
+		</>
 	);
 };
 

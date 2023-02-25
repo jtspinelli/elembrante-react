@@ -10,6 +10,7 @@ export const Page = styled(Box)({
 
 export const Container = styled(Box)({
 	width: '450px',
+	height: '385px',
 	padding: '48px 0',
 	borderRadius: '8px',
 	border: '1px solid gainsboro',
