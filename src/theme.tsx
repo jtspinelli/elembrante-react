@@ -6,17 +6,26 @@ const using = '#ca792e';
 
 declare module '@mui/material/styles' {
 	interface Theme {
-	  appIcon: {
-		default: string;
-	  };
+		appIcon: {
+			default: string;
+		};
+	}
+
+	interface BreakpointOverrides {
+		xs: true;
+		ssm: true;
+		sm: true;
+		md: true;
+		lg: true;
+		xl: true;
 	}
 
 	interface ThemeOptions {
-	  appIcon?: {
-		default?: string;
-	  };
+		appIcon?: {
+			default?: string;
+		};
 	}
-  }
+}
 
 const theme = createTheme({
 	palette: {
@@ -32,6 +41,16 @@ const theme = createTheme({
 	},
 	appIcon: {
 		default: using
+	},
+	breakpoints: {
+		values: {
+			xs: 0,
+			ssm: 450,
+			sm: 600,
+			md: 900,
+			lg: 1200,
+			xl: 1536
+		}
 	}
 });
 
