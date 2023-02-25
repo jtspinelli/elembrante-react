@@ -9,7 +9,6 @@ import { useSnackbar } from 'notistack';
 import { RootState } from '../../../app/store';
 import { selectAll } from '../usersSlice';
 import { addAll } from '../usersSlice';
-import GoogleLogo from '../../../app/images/Google__G__Logo.svg';
 import GoogleLogin from '../../../app/components/GoogleLogin/GoogleLogin';
 import User from '../../../app/types/User';
 import Logo from '../../../app/components/Logo/Logo';
@@ -109,18 +108,12 @@ const Login: React.FC = () => {
 			username: user.username
 		}));
 	}
-
-	function initGoogleLogin(){
-		(document.querySelector('button.googleLoginBtn') as HTMLButtonElement).click();
-	}
 	/* #endregion */	
 
 	return (
 		<>
-			<GoogleLogin />
-
-			<ButtonGoogleLogin onClick={initGoogleLogin}>
-				<img src={GoogleLogo} /> Entrar com Google
+			<ButtonGoogleLogin>
+				<GoogleLogin />
 			</ButtonGoogleLogin>
 			
 			<Container ref={componentsContainer}>

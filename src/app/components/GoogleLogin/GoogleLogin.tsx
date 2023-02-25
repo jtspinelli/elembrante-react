@@ -1,11 +1,11 @@
 import React from 'react';
+import { CredentialResponse, GoogleLogin as OauthGoogleLogin } from '@react-oauth/google';
 import { useDispatch, useSelector } from 'react-redux';
 import { add, selectAll } from '../../../features/users/usersSlice';
 import { setLoggedUser } from '../../../features/users/LoggedUserSlice';
 import { useSnackbar } from 'notistack';
 import { v4 as uuid } from 'uuid';
-import OAuth2Login from 'react-simple-oauth2-login';
-import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 import User from '../../types/User';
 
 const GoogleLogin: React.FC = () => {
@@ -25,53 +25,36 @@ const GoogleLogin: React.FC = () => {
 		}));
 	}
 
-	async function getGoogleUserInfo(token: string){
-		const url = `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`;
-
-		await axios.get(url)
-			.then((data: { data: { email: string } }) => {
-				const foundUser = users.find(u => u.username === data.data.email);
-
-				if(foundUser){
-					logUserIn(foundUser);
-					return;
-				}
-				
-				const newUser: User = {
-					id: uuid(),
-					nome: data.data.email.split('@')[0],
-					username: data.data.email,
-					senha: ''
-				};
-
-				createUser(newUser);
-				logUserIn(newUser);
-			});
-	}
-
-	const onFailure = (response: unknown) => {
-		const userCanceled = response == 'Error: The popup was closed for an unexpected reason';
-		if(userCanceled) return;
-		
+	const onError = () => {
 		enqueueSnackbar('erro ao comunicar com o servidor', { variant:'error' });
 	};
 
-	const onSuccess = (response: { access_token: string }) => {
-		getGoogleUserInfo(response.access_token);
+	const onSuccess = (response: CredentialResponse) => {
+		if(!response.credential) return;
+
+		const userInfo: { email: string, name: string } = jwt_decode(response.credential);
+
+		const foundUser = users.find(u => u.username === userInfo.email);
+		if(foundUser){
+			logUserIn(foundUser);
+			return;
+		}
+				
+		const newUser: User = {
+			id: uuid(),
+			nome: userInfo.name,
+			username: userInfo.email,
+			senha: ''
+		};
+
+		createUser(newUser);
+		logUserIn(newUser);
 	};
 
 	return (
-		<OAuth2Login
-			authorizationUrl='https://accounts.google.com/o/oauth2/auth'
-			responseType='token'
-			clientId='613228627630-mmhk8vd1jq99hh4bprm5vee7hg668fu7.apps.googleusercontent.com'				
-			redirectUri='http://localhost:3000/login'
-			scope='https://www.googleapis.com/auth/userinfo.email'
+		<OauthGoogleLogin 
 			onSuccess={onSuccess}
-			onFailure={onFailure}
-			buttonText='OAuth2_GoogleLogin'
-			className='googleLoginBtn'
-			isCrossOrigin={true}	
+			onError={onError}
 		/>	
 	);
 };
