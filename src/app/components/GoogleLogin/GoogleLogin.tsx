@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { add, selectAll } from '../../../features/users/usersSlice';
 import { setLoggedUser } from '../../../features/users/LoggedUserSlice';
@@ -7,6 +7,8 @@ import { v4 as uuid } from 'uuid';
 import OAuth2Login from 'react-simple-oauth2-login';
 import axios from 'axios';
 import User from '../../types/User';
+import { Box } from '@mui/material';
+import ReactDOM from 'react-dom/client';
 
 const GoogleLogin: React.FC = () => {
 	const users = useSelector(selectAll);
@@ -60,8 +62,13 @@ const GoogleLogin: React.FC = () => {
 		getGoogleUserInfo(response.access_token);
 	};
 
-	return (
-		<OAuth2Login
+	const oauth2LoginContainer = useRef<HTMLDivElement>();
+
+	useEffect(() => {
+		if(!oauth2LoginContainer.current) return;
+
+		const root = ReactDOM.createRoot(oauth2LoginContainer.current);
+		root.render(<OAuth2Login
 			authorizationUrl='https://accounts.google.com/o/oauth2/auth'
 			responseType='token'
 			clientId='***REMOVED***'				
@@ -69,9 +76,12 @@ const GoogleLogin: React.FC = () => {
 			scope='https://www.googleapis.com/auth/userinfo.email'
 			onSuccess={onSuccess}
 			onFailure={onFailure}
-			buttonText='OAuth2_GoogleLogin'
-			className='googleLoginBtn'
-		/>
+			buttonText='OAuth2_GoogleLogin'			
+		/>);
+	}, []);
+
+	return (
+		<Box ref={oauth2LoginContainer}></Box>		
 	);
 };
 

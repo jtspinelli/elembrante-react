@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Actions, ButtonGoogleLogin, Container, Form, transitionDuration } from './styles';
-import { Typography, TextField, Button } from '@mui/material';
+import { Typography, TextField, Button, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { setLoggedUser } from '../LoggedUserSlice';
