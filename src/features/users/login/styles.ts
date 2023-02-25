@@ -17,7 +17,7 @@ export const Form = styled(Box)({
 	display: 'flex',
 	flexDirection: 'column',
 	justifyContent: 'center',
-	width: '50%',
+	width: '100%',
 	padding: '0 48px'
 });
 Form.defaultProps = {
