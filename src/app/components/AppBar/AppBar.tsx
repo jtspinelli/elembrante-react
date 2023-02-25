@@ -17,6 +17,7 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.up('ssm'));
+	const upSm = useMediaQuery(theme.breakpoints.up('sm'));
 
 	const dispatch = useDispatch();
 
@@ -42,7 +43,7 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 	}
 
 	return (
-		<AppBar position="fixed" open={open} drawerwidth={width}>
+		<AppBar position="fixed" open={open} drawerwidth={width} upsm={upSm ? 1 : 0}>
 			<Toolbar>
 				<Box>
 					<IconButton

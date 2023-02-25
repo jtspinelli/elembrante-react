@@ -4,16 +4,17 @@ import { Box, styled, Toolbar as MuiToolbar, Typography } from '@mui/material';
 export interface AppBarProps extends MuiAppBarProps {
 	open?: boolean;
 	drawerwidth?: string;
+	upsm?: number;
 }
 
 export const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open, drawerwidth }) => ({
+})<AppBarProps>(({ theme, open, drawerwidth, upsm }) => ({
 	transition: theme.transitions.create(['margin', 'width'], {
 	  easing: theme.transitions.easing.sharp,
 	  duration: theme.transitions.duration.leavingScreen,
 	}),
-	...(open && {
+	...(open && upsm && {
 	  width: `calc(100% - ${drawerwidth})`,
 	  marginLeft: `${drawerwidth}`,
 	  transition: theme.transitions.create(['margin', 'width'], {

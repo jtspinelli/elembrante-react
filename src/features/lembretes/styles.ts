@@ -1,12 +1,25 @@
 import { styled, Box } from '@mui/material';
 
-export const LembreteContainer = styled(Box)((props: { archived: string }) => ({
+export const LembreteContainer = styled(Box, { shouldForwardProp: (prop) => prop !== 'archived' })<{
+	archived: boolean;
+}>(({archived, theme}) => ({
 	border: '1px solid gainsboro',
 	borderRadius: '8px',
-	width: 'calc(25% - 20px * .75)',	
 	display: 'flex',
 	flexDirection: 'column',
 	justifyContent: 'space-between',
+	[theme.breakpoints.up('md')]: {
+		width: 'calc(25% - 20px * .75)'
+	},
+	[theme.breakpoints.down('md')]: {
+		width: 'calc(33.33% - 20px * .667)'
+	},
+	[theme.breakpoints.down('sm')]: {
+		width: 'calc(50% - 20px * .5)'
+	},
+	[theme.breakpoints.down('ssm')]: {
+		width: '100%'
+	},
 	'&:hover': {
 		boxShadow: '0 1px 2px 0 rgb(60 64 67 / 30%), 0 1px 3px 1px rgb(60 64 67 / 15%)',
 		'& #action-area': {
@@ -17,7 +30,7 @@ export const LembreteContainer = styled(Box)((props: { archived: string }) => ({
 		cursor: 'default'
 	},
 	'& .MuiBox-root': {
-		color: props.archived === 'true' ? '#bbbbbb' : 'unset',
+		color: archived ? '#bbbbbb' : 'unset',
 	}
 }));
 

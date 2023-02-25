@@ -34,7 +34,7 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 	}
 
 	return (
-		<LembreteContainer archived={props.archived.toString()}>
+		<LembreteContainer archived={props.archived}>
 			<Box>
 				<Titulo> { props.lembrete.descricao } </Titulo>
 				<Detalhamento> { props.lembrete.detalhamento} </Detalhamento>
