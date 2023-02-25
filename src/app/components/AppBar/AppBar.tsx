@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-import { Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import { Box, IconButton, Menu, MenuItem, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { AppBar, AppBarProps, AppIcon, AppTitle, Toolbar } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppBar, AppBarProps } from './styles';
 import { setLoggedUser } from '../../../features/users/LoggedUserSlice';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store';
 import { setOpen } from '../../../features/sideBar/sideBarSlice';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
-import AppIcon from '../AppIcon/AppIcon';
+import Icon from '../AppIcon/AppIcon';
 
 const CustomAppBar: React.FC<AppBarProps> = () => {	
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const { open, width } = useSelector((state: RootState) => state.sideBarReducer);
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 	const navigate = useNavigate();
+	const theme = useTheme();
+	const matches = useMediaQuery(theme.breakpoints.up('ssm'));
 
 	const dispatch = useDispatch();
 
@@ -41,8 +43,8 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 
 	return (
 		<AppBar position="fixed" open={open} drawerwidth={width}>
-			<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-				<Box sx={{ display: 'flex', alignItems: 'center' }}>
+			<Toolbar>
+				<Box>
 					<IconButton
 						color="inherit"
 						aria-label="open drawer"
@@ -53,15 +55,16 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 						<MenuIcon />
 					</IconButton>
 					
-					<AppIcon colorDefault={false} />
-
-					<Typography variant="h6" noWrap component="div" sx={{ marginLeft: '10px' }}>
-            				Elembrante
-					</Typography>
+					<AppIcon> <Icon colorDefault={false} /> </AppIcon>
+					
+					<AppTitle variant="h6"> Elembrante </AppTitle>
 				</Box>
 				
-				<Box sx={{ display: 'flex', alignItems: 'center' }}>
-					<Typography>{getLoggedUserFirstName()}</Typography>
+				<Box>
+					{ matches && 
+						<Typography>{getLoggedUserFirstName()}</Typography>
+					}
+					
 					<IconButton
 						size="large"
 						aria-label="account of current user"
@@ -72,6 +75,7 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 					>
 						<AccountCircle />
 					</IconButton>
+					
 					<Menu
 						id="menu-appbar"
 						anchorEl={anchorEl}
