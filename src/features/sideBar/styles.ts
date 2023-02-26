@@ -13,12 +13,13 @@ Drawer.defaultProps = {
 	anchor: 'left'
 };
 
+
 export const DrawerHeader = styled('div')(({ theme }) => ({
 	display: 'flex',
 	alignItems: 'center',
 	padding: theme.spacing(0, 1),
 	...theme.mixins.toolbar,
-	justifyContent: 'flex-end',
+	justifyContent: 'flex-end'
 }));
 
 export const List = styled(MuiList)(({ theme }) => ({
