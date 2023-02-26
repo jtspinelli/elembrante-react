@@ -35,11 +35,25 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 		enqueueSnackbar('Lembrete recuperado!', { variant: 'success', autoHideDuration: 2000 });
 	}
 
+	function getTitulo(){
+		if(!props.lembrete.descricao) return;
+		
+		if(props.lembrete.descricao.length < 30) return props.lembrete.descricao;
+		return props.lembrete.descricao.substring(0, 30) + '...';
+	}
+
+	function getDetalhamento(){
+		if(!props.lembrete.detalhamento) return;
+
+		if(props.lembrete.detalhamento.length < 60) return props.lembrete.detalhamento;
+		return props.lembrete.detalhamento.substring(0, 60) + '...';
+	}
+
 	return (
 		<LembreteContainer archived={props.archived} mainWidth={mainWidth}>
 			<Box>
-				<Titulo> { props.lembrete.descricao } </Titulo>
-				<Detalhamento> { props.lembrete.detalhamento} </Detalhamento>
+				<Titulo> { getTitulo() } </Titulo>
+				<Detalhamento> { getDetalhamento() } </Detalhamento>
 			</Box>
 		
 			<Actions id="action-area">
