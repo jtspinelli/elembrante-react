@@ -9,7 +9,6 @@ export const Drawer = styled(MuiDrawer)((props: { width: string }) => ({
 	}
 }));
 Drawer.defaultProps = {
-	variant: 'persistent',
 	anchor: 'left'
 };
 

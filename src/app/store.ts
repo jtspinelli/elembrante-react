@@ -6,6 +6,7 @@ import sideBarSlice from '../features/sideBar/sideBarSlice';
 import editModalSlice from '../features/editModal/editModalSlice';
 import UsersSlice from '../features/users/usersSlice';
 import LoggedUserSlice from '../features/users/LoggedUserSlice';
+import configSlice from '../features/config/configSlice';
 
 const persistedReducer = persistReducer({ key: 'lembretes', storage }, lembreteSlice.reducer);
 const persistedUsers = persistReducer({ key:'users', storage }, UsersSlice.reducer);
@@ -17,7 +18,8 @@ const store = configureStore({
 		usersReducer: persistedUsers,
 		loggedUsersReducer: persistedLoggedUser,
 		sideBarReducer: sideBarSlice.reducer,
-		editModalReducer: editModalSlice.reducer
+		editModalReducer: editModalSlice.reducer,
+		configReducer: configSlice.reducer
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

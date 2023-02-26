@@ -14,6 +14,7 @@ const CustomDrawer: React.FC = () => {
 	const { open, width } = useSelector((state: RootState) => state.sideBarReducer);
 	const theme = useTheme();
 	const downMd = useMediaQuery(theme.breakpoints.down('md'));
+	const downSm = useMediaQuery(theme.breakpoints.down('sm'));
 	const dispatch = useDispatch();
 
 	const closeDrawer = () => {
@@ -25,7 +26,7 @@ const CustomDrawer: React.FC = () => {
 	}
 
 	return (
-		<Drawer width={width} open={open}>
+		<Drawer width={width} open={open} onClose={closeDrawer} variant={ downSm ? 'temporary' : 'persistent' }>
 			<DrawerHeader>
 				<IconButton onClick={closeDrawer}>
 					{theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}

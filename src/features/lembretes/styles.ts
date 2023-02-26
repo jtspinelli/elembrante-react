@@ -1,25 +1,24 @@
 import { styled, Box } from '@mui/material';
 
-export const LembreteContainer = styled(Box, { shouldForwardProp: (prop) => prop !== 'archived' })<{
+export const LembreteContainer = styled(Box, { shouldForwardProp: (prop) => prop !== 'archived' && prop !== 'mainWidth' })<{
 	archived: boolean;
-}>(({archived, theme}) => ({
+	mainWidth: number;
+}>(({archived, mainWidth}) => ({
 	border: '1px solid gainsboro',
 	borderRadius: '8px',
 	display: 'flex',
 	flexDirection: 'column',
 	justifyContent: 'space-between',
-	[theme.breakpoints.up('md')]: {
-		width: 'calc(25% - 20px * .75)'
-	},
-	[theme.breakpoints.down('md')]: {
+	width: 'calc(25% - 20px * .75)',
+	...(mainWidth <= 750 && mainWidth > 566 && {
 		width: 'calc(33.33% - 20px * .667)'
-	},
-	[theme.breakpoints.down('sm')]: {
+	}),
+	...(mainWidth <= 566 && mainWidth > 450 && {
 		width: 'calc(50% - 20px * .5)'
-	},
-	[theme.breakpoints.down('ssm')]: {
+	}),
+	...(mainWidth <= 450 && {
 		width: '100%'
-	},
+	}),
 	'&:hover': {
 		boxShadow: '0 1px 2px 0 rgb(60 64 67 / 30%), 0 1px 3px 1px rgb(60 64 67 / 15%)',
 		'& #action-area': {
