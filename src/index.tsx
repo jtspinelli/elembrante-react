@@ -12,7 +12,7 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-	<GoogleOAuthProvider clientId='***REMOVED***'>
+	<GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_KEY ?? ''}>
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
 				<App />
