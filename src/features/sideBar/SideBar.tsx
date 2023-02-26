@@ -21,12 +21,16 @@ const CustomDrawer: React.FC = () => {
 		dispatch(setOpen(false));
 	};
 
+	const openDrawer = () => {
+		dispatch(setOpen(true));
+	};
+
 	function closeIfVerticalScreen(){
 		if(downMd) closeDrawer();
 	}
 
 	return (
-		<Drawer width={width} open={open} onClose={closeDrawer} variant={ downSm ? 'temporary' : 'persistent' }>
+		<Drawer width={width} open={open} onOpen={openDrawer} onClose={closeDrawer} variant={ downSm ? 'temporary' : 'persistent' }>
 			<DrawerHeader>
 				<IconButton onClick={closeDrawer}>
 					{theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}

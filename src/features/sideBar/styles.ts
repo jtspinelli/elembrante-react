@@ -1,4 +1,4 @@
-import { styled, Drawer as MuiDrawer, List as MuiList, Box as MuiBox } from '@mui/material';
+import { styled, SwipeableDrawer as MuiDrawer, List as MuiList, Box as MuiBox } from '@mui/material';
 
 export const Drawer = styled(MuiDrawer)((props: { width: string }) => ({
 	width: props.width,
