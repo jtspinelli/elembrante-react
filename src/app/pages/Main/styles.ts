@@ -27,6 +27,7 @@ export const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open
 	upSm: boolean;
   }>(({ theme, open, drawerwidth, upSm }) => ({
   	flexGrow: 1,
+  	minWidth: '300px',
   	padding: theme.spacing(3),
   	transition: theme.transitions.create('margin', {
 	  easing: theme.transitions.easing.sharp,
