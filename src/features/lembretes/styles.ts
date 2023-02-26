@@ -38,7 +38,9 @@ export const Titulo = styled(Box)({
 });
 
 export const Detalhamento = styled(Box)({
-	padding: '10px 16px 16px'
+	padding: '10px 16px 16px',
+	overflow: 'hidden',
+	textOverflow: 'ellipsis'
 });
 
 export const Actions = styled(Box)(({theme})=>({
