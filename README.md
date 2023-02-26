@@ -1,41 +1,38 @@
-### 1 - Criar a INTERFACE em um arquivo exclusivo para ela
+<img src='./src/app/images/ElembranteLogo.png' width=330>
 
-### 2 
+#### Aplicação para gerencimento de lembretes/notas.
 
-- 2.1 - Criar o ENTITYADAPTER
+## IT'S LIVE!
 
-- 2.2 - Criar o SLICE utilizando o [adapter].getInitialState() e [adapter].addOne ou .removeOne, etc.
+A aplicação está disponível [neste link](https://elembrante.vercel.app/).
 
-### 3 - Fazer os Exports:
-- 3.1 - do slice
-- 3.2 - das actions (reducers do slice) - ex.: `export const { addEntity, removeEntity } = slice.actions;`
+![app gif](./src/app/images/app.gif)
 
-### 4 - Criar a Store utilizando o configureStore do redux/toolkit
+## Login
 
-### 5 - Fazer os exports:
-- 5.1 da própria store
-- 5.2 do Type - ex.: `export type RootState = ReturnType<typeof store.getState>;`
+Cadastre-se ou utilize sua conta Google!
 
-### 6 - Fazer export do selector selectAll do adapter
-ex.: 
-```TS
-export const { selectAll } = [adapter].getSelectors((state: RootState) => state.entityReducer);
+<div align='center'>
+
+<img width=400 src='./src/app/images/Login%20Screenshot.png'>
+</div>
+
+## Rodando localmente*
+
+Para rodar o projeto localmente, são necessárias apenas duas etapas.
+
+**1 -** Clone o repositório e execute o comando abaixo para instalar todas as dependências:
+
+```
+npm install
 ```
 
-### 7 - Criar a configuração do Redux-Persist (no arquivo da Store)
+**2 -** Inicialize a aplicação executando:
 
-### 8 - Criar o 'persistedReducer' passando a config e o slice.Reducer (no arquivo da Store)
-
-### 9 - Atualizar a Store utilizando o 'persistedReducer'
-ex.: 
-```TS
-const store = configureStore({
-    reducer: {
-        talReducer: persistedReducer
-    }
-});
+```
+npm start
 ```
 
-### 10 - Exportar a 'persistedStore' utilizando o persistStore do redux-persist
+Dirija-se ao endereço `http://localhost:3000` para visualizar a aplicação.
 
-### 11 - Englobar toda a aplicação com um `<Provider store={store}>` e `<PersistGate persistor={persistor}>`
+#### *Certifique-se de ter [Node.js](https://nodejs.org/en/) instalado em sua máquina.
