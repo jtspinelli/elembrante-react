@@ -34,7 +34,8 @@ TextBoxDetalhamento.defaultProps = {
 	component:'div' ,
 	role:'textbox',
 	contentEditable: 'true' ,
-	suppressContentEditableWarning: true
+	suppressContentEditableWarning: true,
+	whiteSpace: 'pre-wrap'
 };
 
 export const Actions = styled(Box)(({theme})=>({
