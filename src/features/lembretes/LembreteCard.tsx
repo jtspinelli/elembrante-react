@@ -1,19 +1,17 @@
 import React from 'react';
+import store, { RootState } from '../../app/store';
 import { Actions, Detalhamento, LembreteContainer, Titulo } from './styles';
 import { setModalOpen, setLembrete } from '../editModal/editModalSlice';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { LembreteCardProps } from './interface';
-// import { updateLembrete } from './lembreteSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSnackbar } from 'notistack';
-import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
-import useSafeRemove from '../../app/services/useSafeRemove';
-import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
-import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import EditIcon from '@mui/icons-material/EditOutlined';
-import store, { RootState } from '../../app/store';
-import { recoverOne } from './lembreteSlice';
+import { LembreteCardProps } from './interface';
 import { recoverLembrete } from './thunks';
+import { useSnackbar } from 'notistack';
+import EditIcon from '@mui/icons-material/EditOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
+import useSafeRemove from '../../app/services/useSafeRemove';
+import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
 
 const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => {
 	const dispatch = useDispatch();
@@ -29,12 +27,11 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 
 	function bringBack(){
 		if(!loggedUser) return;
-		
-		dispatch(recoverOne(props.lembrete.id));
 
-		store.dispatch(recoverLembrete({ id: props.lembrete.id, accessToken: loggedUser.accessToken }));
-
-		enqueueSnackbar('Lembrete recuperado!', { variant: 'success', autoHideDuration: 2000 });
+		store.dispatch(recoverLembrete({ id: props.lembrete.id, accessToken: loggedUser.accessToken }))
+			.then(() => {
+				enqueueSnackbar('Lembrete recuperado!', { variant: 'success', autoHideDuration: 2000 });
+			});		
 	}
 
 	function getTitulo(){

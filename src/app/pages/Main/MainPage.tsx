@@ -23,6 +23,7 @@ const MainPage: React.FC = () => {
 	const upSm = useMediaQuery(theme.breakpoints.up('sm'));
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const { archiving, recovering } = useSelector((state: RootState) => state.lembretesReducer);
 
 	useEffect(redirectIfLoggedOut, []);
 	useEffect(() => { dispatch(setWidth(mainWidth)); }, [mainWidth]);
@@ -40,6 +41,26 @@ const MainPage: React.FC = () => {
 		<Box sx={{ display: 'flex' }}>
 			<AppBar />
 			<Drawer />
+
+			{(archiving || recovering) &&
+				<Box sx={{ 
+					backgroundColor: '#00000065', 
+					position: 'absolute', 
+					top: 0, 
+					zIndex: 1200, 
+					left: 0, 
+					width: '100vw', 
+					height: '100vh',
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					p: {
+						color: 'white'
+					}
+				}}>
+					<p>Pera aí...</p>
+				</Box>	
+			}
 
 			<Main open={open} drawerwidth={width} upSm={upSm}>
 				<DrawerHeader />
