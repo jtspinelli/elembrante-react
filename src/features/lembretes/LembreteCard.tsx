@@ -11,13 +11,16 @@ import useSafeRemove from '../../app/services/useSafeRemove';
 import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
-import { RootState } from '../../app/store';
+import store, { RootState } from '../../app/store';
+import { recoverOne } from './lembreteSlice';
+import { recoverLembrete } from './thunks';
 
 const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => {
 	const dispatch = useDispatch();
 	const { safeRemove, safeArchive } = useSafeRemove();
 	const { enqueueSnackbar } = useSnackbar();
 	const { mainWidth } = useSelector((state: RootState) => state.configReducer);
+	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 	
 	function edit(){
 		dispatch(setModalOpen(true)); 
@@ -25,12 +28,11 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 	}
 
 	function bringBack(){
-		// dispatch(updateLembrete({
-		// 	id: props.lembrete.id,
-		// 	changes: {
-		// 		excluido: false
-		// 	}
-		// }));
+		if(!loggedUser) return;
+		
+		dispatch(recoverOne(props.lembrete.id));
+
+		store.dispatch(recoverLembrete({ id: props.lembrete.id, accessToken: loggedUser.accessToken }));
 
 		enqueueSnackbar('Lembrete recuperado!', { variant: 'success', autoHideDuration: 2000 });
 	}

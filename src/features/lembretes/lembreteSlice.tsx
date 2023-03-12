@@ -18,13 +18,35 @@ const lembreteSlice = createSlice({
 	reducers: {	
 		destroyAll(state){
 			state.lembretes = [];
+		},
+		archiveOne(state, action: PayloadAction<number>) {
+			const lembrete = state.lembretes.find(l => l.id === action.payload);
+			if(!lembrete) return;
+
+			lembrete.arquivado = true;
+		},
+		recoverOne(state, action: PayloadAction<number>) {
+			const lembrete = state.lembretes.find(l => l.id === action.payload);
+			if(!lembrete) return;
+
+			lembrete.arquivado = false;
 		}
 	},
 	extraReducers({ addCase }) {
 		addCase(getLembretes.pending, loading);
 		addCase(getLembretes.fulfilled, set);
+		// addCase(archiveOne.fulfilled, archiveLembrete);
 	}
 });
+
+function archiveLembrete(state: IInitialState, action: PayloadAction<number>) {
+	if(action.payload < 0) return;
+
+	const lembrete = state.lembretes.find(l => l.id === action.payload);
+	if(!lembrete) return;
+
+	lembrete.arquivado = true;
+}
 
 function loading(state: IInitialState){
 	state.loading = true;
@@ -39,6 +61,6 @@ function set(
 }
 
 export const { lembretes } = lembreteSlice.getInitialState();
-export const { destroyAll } = lembreteSlice.actions;
+export const { destroyAll, archiveOne, recoverOne } = lembreteSlice.actions;
 
 export default lembreteSlice;

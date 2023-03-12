@@ -26,9 +26,9 @@ const ArquivoPage: React.FC = () => {
 			</Typography>
 
 			<LembretesSection>
-				{ lembretes.map(getCard) }
+				{ lembretes.filter(lembrete => lembrete.arquivado).map(getCard) }
 
-				{ !lembretes.length && 
+				{ !lembretes.filter(lembrete => lembrete.arquivado).length && 
 					<Typography color={theme.palette.grey[700]}>Nenhum lembrete arquivado.</Typography>
 				}
 			</LembretesSection>
