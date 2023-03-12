@@ -19,9 +19,9 @@ const GoogleLogin: React.FC = () => {
 
 	function logUserIn(user: User){
 		dispatch(setLoggedUser({
-			id: user.id,
 			nome: user.nome,
-			username: user.username
+			username: user.username,
+			accessToken: ''
 		}));
 	}
 

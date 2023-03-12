@@ -3,7 +3,7 @@ import { Actions, Detalhamento, LembreteContainer, Titulo } from './styles';
 import { setModalOpen, setLembrete } from '../editModal/editModalSlice';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import { LembreteCardProps } from './interface';
-import { updateLembrete } from './lembreteSlice';
+// import { updateLembrete } from './lembreteSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
@@ -25,28 +25,28 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 	}
 
 	function bringBack(){
-		dispatch(updateLembrete({
-			id: props.lembrete.id,
-			changes: {
-				excluido: false
-			}
-		}));
+		// dispatch(updateLembrete({
+		// 	id: props.lembrete.id,
+		// 	changes: {
+		// 		excluido: false
+		// 	}
+		// }));
 
 		enqueueSnackbar('Lembrete recuperado!', { variant: 'success', autoHideDuration: 2000 });
 	}
 
 	function getTitulo(){
-		if(!props.lembrete.descricao) return;
+		if(!props.lembrete.titulo) return;
 		
-		if(props.lembrete.descricao.length < 30) return props.lembrete.descricao;
-		return props.lembrete.descricao.substring(0, 30) + '...';
+		if(props.lembrete.titulo.length < 30) return props.lembrete.titulo;
+		return props.lembrete.titulo.substring(0, 30) + '...';
 	}
 
 	function getDetalhamento(){
-		if(!props.lembrete.detalhamento) return;
+		if(!props.lembrete.descricao) return;
 
-		if(props.lembrete.detalhamento.length < 60) return props.lembrete.detalhamento;
-		return props.lembrete.detalhamento.substring(0, 60) + '...';
+		if(props.lembrete.descricao.length < 60) return props.lembrete.descricao;
+		return props.lembrete.descricao.substring(0, 60) + '...';
 	}
 
 	return (

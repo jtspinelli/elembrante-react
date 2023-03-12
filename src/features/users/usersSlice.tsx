@@ -6,6 +6,7 @@ const usersAdapter = createEntityAdapter<User>({
 	selectId: (user) => user.id
 });
 
+
 const UsersSlice = createSlice({
 	name: 'users',
 	initialState: usersAdapter.getInitialState(),

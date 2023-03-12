@@ -178,9 +178,9 @@ const Register: React.FC = () => {
 		enqueueSnackbar('Conta criada com sucesso!', { variant: 'success' });
 
 		dispatch(setLoggedUser({
-			id: newUser.id,
 			nome: newUser.nome,
-			username: newUser.username
+			username: newUser.username,
+			accessToken: ''
 		}));
 	}
 

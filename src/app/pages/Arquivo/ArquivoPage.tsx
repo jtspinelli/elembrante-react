@@ -2,7 +2,6 @@ import React from 'react';
 import { LembretesSection } from '../Meus Lembretes/styles';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { selectAll } from '../../../features/lembretes/lembreteSlice';
 import { useTheme } from '@mui/material';
 import LembreteCard from '../../../features/lembretes/LembreteCard';
 import Typography from '@mui/material/Typography';
@@ -10,16 +9,7 @@ import Lembrete from '../../types/Lembrete';
 
 const ArquivoPage: React.FC = () => {
 	const theme = useTheme();
-	const lembretes = useSelector(selectAll);
-	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
-
-	function getLembretes(){
-		if(!loggedUser) return [];
-
-		return lembretes
-			.filter(lembrete => lembrete.userId === loggedUser.id && lembrete.excluido)
-			.sort((a: Lembrete, b: Lembrete) => b.criadoEm > a.criadoEm ? 1 : -1);
-	}
+	const { lembretes } = useSelector((state: RootState) => state.lembretesReducer);
 
 	function getCard(lembrete: Lembrete){
 		return <LembreteCard lembrete={lembrete} key={lembrete.id} showEdit={false} archived={true} />;
@@ -36,9 +26,9 @@ const ArquivoPage: React.FC = () => {
 			</Typography>
 
 			<LembretesSection>
-				{ getLembretes().map(getCard) }
+				{ lembretes.map(getCard) }
 
-				{ !getLembretes().length && 
+				{ !lembretes.length && 
 					<Typography color={theme.palette.grey[700]}>Nenhum lembrete arquivado.</Typography>
 				}
 			</LembretesSection>

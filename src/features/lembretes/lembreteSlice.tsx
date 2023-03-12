@@ -1,24 +1,44 @@
-import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { getLembretes } from './thunks';
 import Lembrete from '../../app/types/Lembrete';
-import { RootState } from '../../app/store';
 
-const lembreteAdapter = createEntityAdapter<Lembrete>({
-	selectId: (lembrete) => lembrete.id,
-});
+interface IInitialState {
+	lembretes: Lembrete[],
+	loading: boolean;
+}
+
+const initialState: IInitialState = {
+	lembretes: [],
+	loading: false
+};
 
 const lembreteSlice = createSlice({
 	name: 'lembretes',
-	initialState: lembreteAdapter.getInitialState(),
-	reducers: {
-		addLembrete: lembreteAdapter.addOne,
-		removeLembrete: lembreteAdapter.removeOne,
-		updateLembrete: lembreteAdapter.updateOne,
+	initialState,
+	reducers: {	
+		destroyAll(state){
+			state.lembretes = [];
+		}
 	},
+	extraReducers({ addCase }) {
+		addCase(getLembretes.pending, loading);
+		addCase(getLembretes.fulfilled, set);
+	}
 });
 
-export const { selectAll, selectById } = lembreteAdapter.getSelectors(
-	(state: RootState) => state.lembretesReducer
-);
-export const { addLembrete, removeLembrete, updateLembrete } = lembreteSlice.actions;
+function loading(state: IInitialState){
+	state.loading = true;
+}
+
+function set(
+	state: IInitialState,
+	action: PayloadAction<Lembrete[]>
+) {
+	state.lembretes = action.payload;
+	state.loading = false;
+}
+
+export const { lembretes } = lembreteSlice.getInitialState();
+export const { destroyAll } = lembreteSlice.actions;
 
 export default lembreteSlice;

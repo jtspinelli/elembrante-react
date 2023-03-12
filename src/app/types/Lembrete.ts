@@ -1,10 +1,10 @@
 interface Lembrete {
-  id: string;
-  descricao: string | null;
-  detalhamento: string | null;
+  id?: number;
+  titulo: string;
+  descricao: string;
   criadoEm: Date;
-  excluido: boolean;
-  userId: string;
+  arquivado: boolean;
+  usuarioId: string;
 }
 
 export default Lembrete;

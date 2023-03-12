@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BoxDetalhamento, BoxTitulo, CustomPaper, Placeholder, TextBoxDetalhamento, TextBoxTitulo } from './formStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { addLembrete } from './lembreteSlice';
+// import { addLembrete } from './lembreteSlice';
 import { useSnackbar } from 'notistack';
 import { v4 as uuid } from 'uuid';
 import { RootState } from '../../app/store';
@@ -39,17 +39,18 @@ const Form: React.FC = () => {
 
 	function createLembrete(){
 		if(!loggedUser) return;
-		
-		const lembrete: Lembrete = {
-			id: uuid(),
-			criadoEm: new Date(),
-			descricao: tituloTextbox.current?.innerText.length ? tituloTextbox.current?.innerText : null,
-			detalhamento: detalhamentoTextbox.current?.innerText.length ? detalhamentoTextbox.current?.innerText : null,
-			excluido: false,
-			userId: loggedUser.id
-		};
 
-		dispatch(addLembrete(lembrete));
+		if(!tituloTextbox.current || !detalhamentoTextbox.current) return;
+		
+		// const lembrete: Lembrete = {
+		// 	criadoEm: new Date(),
+		// 	titulo: tituloTextbox.current.innerText.length ? tituloTextbox.current.innerText : '',
+		// 	descricao: detalhamentoTextbox.current.innerText.length ? detalhamentoTextbox.current.innerText : '',
+		// 	arquivado: false,
+		// 	usuarioId: loggedUser.id
+		// };
+
+		// dispatch(addLembrete(lembrete));
 
 		enqueueSnackbar('Lembrete criado!', { variant: 'success', autoHideDuration: 2000 });
 

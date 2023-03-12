@@ -3,22 +3,19 @@ import { Actions, ButtonGoogleLogin, Container, Form, transitionDuration } from 
 import { Typography, TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { IAuthResponse } from './IAuthResponse';
 import { setLoggedUser } from '../LoggedUserSlice';
-import { defaultUsers } from '../../../app/helpers/defaultUsers';
 import { useSnackbar } from 'notistack';
 import { RootState } from '../../../app/store';
-import { selectAll } from '../usersSlice';
-import { addAll } from '../usersSlice';
-import GoogleLogin from '../../../app/components/GoogleLogin/GoogleLogin';
-import User from '../../../app/types/User';
 import Logo from '../../../app/components/Logo/Logo';
+import axios from 'axios';
+import GoogleLogin from '../../../app/components/GoogleLogin/GoogleLogin';
 
 const Login: React.FC = () => {
 	/* #region States, Refs and Hooks */
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 	const [ username, setUsername ] = useState<string>('');
 	const [ senha, setSenha ] = useState<string>('');
-	const users = useSelector(selectAll);
 	const componentsContainer = useRef<HTMLDivElement>();
 	const textFieldUsername = useRef<HTMLElement>();
 	const textFieldSenha = useRef<HTMLElement>();
@@ -29,21 +26,14 @@ const Login: React.FC = () => {
 
 	/* #region Effects */
 	useEffect(redirectIfLoggedIn, [loggedUser]);
-	useEffect(setUp, []);
+	useEffect(focus, []);
 
-	function setUp(){
+	function focus(){
 		textFieldUsername.current?.focus();
-		createDefaultUsersIfNone();
 	}
 
 	function redirectIfLoggedIn(){
 		if(loggedUser) navigate('/');
-	}
-
-	function createDefaultUsersIfNone(){		
-		if(!users.length){
-			dispatch(addAll(defaultUsers));
-		}
 	}
 	/* #endregion */
 
@@ -51,20 +41,13 @@ const Login: React.FC = () => {
 	function next(e: React.FormEvent<HTMLDivElement>){
 		e.preventDefault();		
 
-		if(!username.length) {
-			enqueueSnackbar('Informe um nome de usuário');
-			return;
-		}
+		if(!username.length) return enqueueSnackbar('Informe um nome de usuário');
 
-		textFieldUsername.current?.blur();		
-		const foundUser = users.find(u => u.username === username);
+		textFieldUsername.current?.blur();
 
-		if(!foundUser) {
-			enqueueSnackbar('Usuário não encontrado');
-			return;
-		}
-
-		goToPasswordStep();
+		axios.post(process.env.REACT_APP_SERVER_BASE_PATH + 'checkuser', { username })
+			.then(() =>	goToPasswordStep())
+			.catch(() => enqueueSnackbar('Usuário não encontrado'));
 	}
 
 	function goToPasswordStep(){
@@ -81,31 +64,27 @@ const Login: React.FC = () => {
 		setTimeout(() => { textFieldUsername.current?.focus();}, transitionDuration);
 		setSenha('');
 	}
-	/* #endregion */
+	/* #endregion */	
 
 	/* #region Authentication/Login */
-	function authenticate(user: User): boolean{
-		const senhaIncorretaOuVazia = user.senha !== senha || !senha.length;
-		if(senhaIncorretaOuVazia) {
-			enqueueSnackbar('Senha incorreta.', {
-				variant: 'error'
-			});
-			return false;
-		}
-		return true;
+	async function authenticate(): Promise<IAuthResponse | null>{
+		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
+
+		return await axios.post(basePath + 'auth', {username, senha})
+			.then((response: {data: IAuthResponse}) => response.data)
+			.catch(() => null );
 	}
 
-	function login(e: React.FormEvent<HTMLDivElement>){
+	async function login(e: React.FormEvent<HTMLDivElement>){
 		e.preventDefault();
-		const user = users.find(u => u.username === username);
 
-		if(!user) return;
-		if(!authenticate(user)) return;
-
+		const serverResponse = await authenticate();
+		if(!serverResponse) return enqueueSnackbar('Senha incorreta.');
+		
 		dispatch(setLoggedUser({
-			id: user.id,
-			nome: user.nome,
-			username: user.username
+			nome: serverResponse.userData.nome,
+			username: serverResponse.userData.username,
+			accessToken: serverResponse.access_token
 		}));
 	}
 	/* #endregion */	

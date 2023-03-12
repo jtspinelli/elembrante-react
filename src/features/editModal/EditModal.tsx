@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateLembrete } from '../lembretes/lembreteSlice';
+// import { updateLembrete } from '../lembretes/lembreteSlice';
 import { setModalOpen } from './editModalSlice';
 import { useSnackbar } from 'notistack';
 import { Box, Modal } from '@mui/material';
@@ -20,8 +20,8 @@ const EditModal: React.FC = () => {
 
 		const editTitulo = titulo.current?.innerText;
 		const editDetalhamento = detalhamento.current?.innerText;
-		const tituloUnchanged = editTitulo === lembrete?.descricao;
-		const detalhamentoUnchanged = editDetalhamento === lembrete?.detalhamento;
+		const tituloUnchanged = editTitulo === lembrete?.titulo;
+		const detalhamentoUnchanged = editDetalhamento === lembrete?.descricao;
 		const lembreteUnchanged = tituloUnchanged && detalhamentoUnchanged;
 
 		if(lembreteUnchanged) {
@@ -29,13 +29,13 @@ const EditModal: React.FC = () => {
 			return;
 		};
 
-		dispatch(updateLembrete({
-			id: lembrete.id,
-			changes: {
-				descricao: titulo.current?.innerText,
-				detalhamento: detalhamento.current?.innerText
-			}
-		}));
+		// dispatch(updateLembrete({
+		// 	id: lembrete.id,
+		// 	changes: {
+		// 		descricao: titulo.current?.innerText,
+		// 		detalhamento: detalhamento.current?.innerText
+		// 	}
+		// }));
 
 		enqueueSnackbar('Lembrete atualizado.', { variant: 'success', autoHideDuration: 2000 });
 		

@@ -19,7 +19,7 @@ const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>,
 		const range = document.createRange();
 		const sel = window.getSelection();
 
-		range.setStart(props.refs.detalhamento.current.childNodes[0],lembrete?.detalhamento?.length ?? 0);
+		range.setStart(props.refs.detalhamento.current.childNodes[0],lembrete?.descricao?.length ?? 0);
 		range.collapse(true);
 
 		sel?.removeAllRanges();
@@ -39,11 +39,11 @@ const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>,
 	return (
 		<>
 			<TextBoxTitulo ref={props.refs.titulo}>
-				{ lembrete && lembrete.descricao }
+				{ lembrete && lembrete.titulo }
 			</TextBoxTitulo>
 
 			<TextBoxDetalhamento ref={props.refs.detalhamento}> 
-				{ lembrete && lembrete.detalhamento }
+				{ lembrete && lembrete.descricao }
 			</TextBoxDetalhamento>
 
 			<Actions>
