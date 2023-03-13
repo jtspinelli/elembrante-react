@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import store, { RootState } from '../store';
+import { archiveOne, recoverOne, removeOne, undoRemove } from '../../features/lembretes/lembreteSlice';
+import { archiveLembrete, removeLembrete } from '../../features/lembretes/thunks';
 import { SnackbarKey, useSnackbar } from 'notistack';
 import { useDispatch, useSelector } from 'react-redux';
-import { archiveOne, recoverOne } from '../../features/lembretes/lembreteSlice';
-import { archiveLembrete } from '../../features/lembretes/thunks';
 import { Button } from '@mui/material';
 import Lembrete from '../types/Lembrete';
 
@@ -31,6 +31,7 @@ const useSafeRemove = () => {
 		if(!lembrete || !loggedUser) return;
 
 		if(operation === 'archive') dispatch(archiveOne(lembrete.id));
+		if(operation === 'delete') dispatch(removeOne(lembrete.id));
 
 		showSnackbar();
 	}, [lembrete]);
@@ -42,7 +43,7 @@ const useSafeRemove = () => {
 	}
 
 	function revertRemove(lembrete: Lembrete, key: SnackbarKey) {
-		// dispatch(undoRemove)
+		dispatch(undoRemove(lembrete));
 		closeSnackbar(key);
 	}
 
@@ -59,6 +60,11 @@ const useSafeRemove = () => {
 				if(reason === 'timeout' && operation === 'archive') {
 					//persist archive
 					store.dispatch(archiveLembrete({ id: lembrete.id, accessToken: loggedUser.accessToken }));
+				}
+
+				if(reason === 'timeout' && operation === 'delete') {
+					//persist delete
+					store.dispatch(removeLembrete({ id: lembrete.id, accessToken: loggedUser.accessToken }));
 				}
 			}
 		});

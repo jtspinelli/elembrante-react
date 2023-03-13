@@ -1,8 +1,8 @@
 import React from 'react';
+import { CircularProgress, Stack, useTheme } from '@mui/material';
 import { LembretesSection } from '../Meus Lembretes/styles';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { CircularProgress, Stack, useTheme } from '@mui/material';
 import LembreteCard from '../../../features/lembretes/LembreteCard';
 import Typography from '@mui/material/Typography';
 import Lembrete from '../../types/Lembrete';

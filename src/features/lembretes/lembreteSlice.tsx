@@ -1,4 +1,4 @@
-import { getLembretes, archiveLembrete, recoverLembrete } from './thunks';
+import { getLembretes, archiveLembrete, recoverLembrete, removeLembrete } from './thunks';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Lembrete from '../../app/types/Lembrete';
 
@@ -7,13 +7,15 @@ interface IInitialState {
 	loading: boolean;
 	archiving: boolean;
 	recovering: boolean;
+	deleting: boolean;
 }
 
 const initialState: IInitialState = {
 	lembretes: [],
 	loading: false,
 	archiving: false,
-	recovering: false
+	recovering: false,
+	deleting: false
 };
 
 const lembreteSlice = createSlice({
@@ -34,6 +36,12 @@ const lembreteSlice = createSlice({
 			if(!lembrete) return;
 
 			lembrete.arquivado = false;
+		},
+		removeOne(state, action: PayloadAction<number>) {
+			state.lembretes = state.lembretes.filter(l => l.id !== action.payload);
+		},
+		undoRemove(state, action: PayloadAction<Lembrete>) {
+			state.lembretes = [...state.lembretes, action.payload];
 		}
 	},
 	extraReducers({ addCase }) {
@@ -43,6 +51,8 @@ const lembreteSlice = createSlice({
 		addCase(archiveLembrete.pending, setArchiving);
 		addCase(recoverLembrete.fulfilled, recover);
 		addCase(recoverLembrete.pending, setRecovering);
+		addCase(removeLembrete.pending, setDeleting);
+		addCase(removeLembrete.fulfilled, setDeleting);
 	}
 });
 
@@ -74,6 +84,13 @@ function setRecovering(state: IInitialState) {
 	state.recovering = true;
 }
 
+function setDeleting(
+	state: IInitialState, 
+	action:PayloadAction<boolean | undefined, string, { arg: { id: number; accessToken: string; }; requestId: string; requestStatus: 'fulfilled' | 'pending'; }, never>
+) {
+	state.deleting = action.meta.requestStatus === 'pending';
+}
+
 function loading(state: IInitialState){
 	state.loading = true;
 }
@@ -87,6 +104,6 @@ function set(
 }
 
 export const { lembretes } = lembreteSlice.getInitialState();
-export const { destroyAll, archiveOne, recoverOne } = lembreteSlice.actions;
+export const { destroyAll, archiveOne, recoverOne, removeOne, undoRemove } = lembreteSlice.actions;
 
 export default lembreteSlice;

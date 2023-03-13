@@ -47,3 +47,18 @@ export const recoverLembrete = createAsyncThunk(
 			.catch(() => -1);
 	}
 );
+
+export const removeLembrete = createAsyncThunk(
+	'lembretes/remove',
+	async (data: { id: number, accessToken: string }): Promise<boolean> => {
+		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
+
+		return await axios.delete(basePath + 'lembrete/' + data.id, {
+			headers: {
+				access_token: data.accessToken
+			}
+		})
+			.then(() => true)
+			.catch(() => false);
+	}
+);
