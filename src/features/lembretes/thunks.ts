@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import Lembrete from '../../app/types/Lembrete';
+import LembretePhantom from '../../app/types/LembretePhantom';
 
 export const getLembretes = createAsyncThunk(
 	'lembretes/all',
@@ -60,5 +61,20 @@ export const removeLembrete = createAsyncThunk(
 		})
 			.then(() => true)
 			.catch(() => false);
+	}
+);
+
+export const createLembrete = createAsyncThunk(
+	'lembretes/create',
+	async (data: { lembrete: LembretePhantom, accessToken: string }): Promise<Lembrete | null> => {
+		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
+
+		return await axios.post(basePath + 'lembrete', data.lembrete, {
+			headers: { 
+				access_token: data.accessToken
+			}
+		})
+			.then((response) => response.data as Lembrete)
+			.catch(() => null);
 	}
 );

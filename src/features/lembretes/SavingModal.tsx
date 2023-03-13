@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 
 const SavingModal: React.FC = () => {
-	const { archiving, recovering, deleting } = useSelector((state: RootState) => state.lembretesReducer);
+	const { archiving, recovering, deleting, creating } = useSelector((state: RootState) => state.lembretesReducer);
 
 	const style = {
 		position: 'absolute',
@@ -26,7 +26,7 @@ const SavingModal: React.FC = () => {
 
 	return (
 		<>
-			{ (archiving || recovering || deleting ) &&
+			{ (archiving || recovering || deleting || creating ) &&
 				<Modal
 					open={true}
 					aria-labelledby="saving"

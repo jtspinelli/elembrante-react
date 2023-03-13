@@ -1,4 +1,4 @@
-import { getLembretes, archiveLembrete, recoverLembrete, removeLembrete } from './thunks';
+import { getLembretes, archiveLembrete, recoverLembrete, removeLembrete, createLembrete } from './thunks';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Lembrete from '../../app/types/Lembrete';
 
@@ -8,6 +8,7 @@ interface IInitialState {
 	archiving: boolean;
 	recovering: boolean;
 	deleting: boolean;
+	creating: boolean;
 }
 
 const initialState: IInitialState = {
@@ -15,7 +16,8 @@ const initialState: IInitialState = {
 	loading: false,
 	archiving: false,
 	recovering: false,
-	deleting: false
+	deleting: false,
+	creating: false
 };
 
 const lembreteSlice = createSlice({
@@ -53,8 +55,16 @@ const lembreteSlice = createSlice({
 		addCase(recoverLembrete.pending, setRecovering);
 		addCase(removeLembrete.pending, setDeleting);
 		addCase(removeLembrete.fulfilled, setDeleting);
+		addCase(createLembrete.pending, setCreating);
+		addCase(createLembrete.fulfilled, add);
 	}
 });
+
+function add(state: IInitialState, action: PayloadAction<Lembrete | null>) {
+	if(!action.payload) return;
+	state.lembretes = [...state.lembretes, action.payload];
+	state.creating = false;
+}
 
 function archive(state: IInitialState, action: PayloadAction<number>) {
 	if(action.payload < 0) return;
@@ -89,6 +99,10 @@ function setDeleting(
 	action:PayloadAction<boolean | undefined, string, { arg: { id: number; accessToken: string; }; requestId: string; requestStatus: 'fulfilled' | 'pending'; }, never>
 ) {
 	state.deleting = action.meta.requestStatus === 'pending';
+}
+
+function setCreating(state: IInitialState) {
+	state.creating = true;
 }
 
 function loading(state: IInitialState){
