@@ -10,9 +10,10 @@ import { Actions, Form } from '../login/styles';
 import { setLoggedUser } from '../LoggedUserSlice';
 import { authenticate } from '../../../app/services/AuthenticationService';
 import { useSnackbar } from 'notistack';
+import { setLoading } from '../../config/configSlice';
 import { RootState } from '../../../app/store';
-import axios from 'axios';
 import Logo from '../../../app/components/Logo/Logo';
+import axios from 'axios';
 
 const Register: React.FC = () => {
 	/* #region States, Effects and Hooks */
@@ -24,10 +25,10 @@ const Register: React.FC = () => {
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 	const { enqueueSnackbar } = useSnackbar();
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
-
+	const navigate = useNavigate();	
 	
 	useEffect(redirectIfLoggedIn, [loggedUser]);
+	useEffect(() => {dispatch(setLoading(false));}, [loggedUser]);
 
 	function redirectIfLoggedIn(){
 		if(loggedUser) navigate('/');
@@ -162,7 +163,8 @@ const Register: React.FC = () => {
 	/* #endregion */
 
 	function criarConta(e: React.FormEvent<HTMLDivElement>){
-		e.preventDefault();
+		e.preventDefault();		
+
 		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
 		if(!validations.nomePass || validations.usernamePass !== 'true' || !validations.senha.senhaPass || !validations.confirmSenhaPass) {
@@ -176,12 +178,17 @@ const Register: React.FC = () => {
 			senha
 		};
 
+		dispatch(setLoading(true));
+
 		axios.post(basePath + 'user', newUser)
 			.then(async () => {
 				enqueueSnackbar('Conta criada com sucesso!', { variant: 'success' });
 
 				const serverResponse = await authenticate(newUser.username, newUser.senha);
-				if(!serverResponse) return;
+				if(!serverResponse) {
+					dispatch(setLoading(false));
+					return;
+				};
 				
 				dispatch(setLoggedUser({
 					nome: newUser.nome,
@@ -190,6 +197,7 @@ const Register: React.FC = () => {
 				}));
 			})
 			.catch(() => {
+				dispatch(setLoading(false));
 				enqueueSnackbar('Erro durante a criação da conta. Tente novamente.', { variant: 'error' });
 			});
 	}

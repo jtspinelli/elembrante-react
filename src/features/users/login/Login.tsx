@@ -3,14 +3,14 @@ import { Actions, ButtonGoogleLogin, Container, Form, transitionDuration } from 
 import { Typography, TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { IAuthResponse } from './IAuthResponse';
 import { setLoggedUser } from '../LoggedUserSlice';
+import { authenticate } from '../../../app/services/AuthenticationService';
 import { useSnackbar } from 'notistack';
+import { setLoading } from '../../config/configSlice';
 import { RootState } from '../../../app/store';
 import Logo from '../../../app/components/Logo/Logo';
 import axios from 'axios';
 import GoogleLogin from '../../../app/components/GoogleLogin/GoogleLogin';
-import { authenticate } from '../../../app/services/AuthenticationService';
 
 const Login: React.FC = () => {
 	/* #region States, Refs and Hooks */
@@ -28,6 +28,7 @@ const Login: React.FC = () => {
 	/* #region Effects */
 	useEffect(redirectIfLoggedIn, [loggedUser]);
 	useEffect(focus, []);
+	useEffect(() => {dispatch(setLoading(false));}, [loggedUser]);
 
 	function focus(){
 		textFieldUsername.current?.focus();
@@ -71,8 +72,14 @@ const Login: React.FC = () => {
 	async function login(e: React.FormEvent<HTMLDivElement>){
 		e.preventDefault();
 
+		dispatch(setLoading(true));
+
 		const serverResponse = await authenticate(username, senha);
-		if(!serverResponse) return enqueueSnackbar('Senha incorreta.');
+		if(!serverResponse) {
+			dispatch(setLoading(false));
+			enqueueSnackbar('Senha incorreta.');
+			return;
+		};
 		
 		dispatch(setLoggedUser({
 			nome: serverResponse.userData.nome,
