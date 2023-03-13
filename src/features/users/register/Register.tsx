@@ -2,23 +2,20 @@
 import React, { useEffect, useState } from 'react';
 import { ConfirmSenhaTextField, NomeTextField, SenhaTextField, SenhaTextHelperList, UsernameTextField, ValidationListItem } from './styles';
 import { hasLetterRegex, hasNumberRegex, hasSpecialCharRegex, senhaRegex, usernameRegex } from '../../../app/helpers/regex';
-import { Button, ListItem, Typography } from '@mui/material';
 import { IValidations, validationsInit } from './helpers';
+import { Button, ListItem, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Actions, Form } from '../login/styles';
 import { setLoggedUser } from '../LoggedUserSlice';
+import { authenticate } from '../../../app/services/AuthenticationService';
 import { useSnackbar } from 'notistack';
-import { v4 as uuid } from 'uuid';
 import { RootState } from '../../../app/store';
-import { selectAll } from '../usersSlice';
-import { add } from '../usersSlice';
-import User from '../../../app/types/User';
+import axios from 'axios';
 import Logo from '../../../app/components/Logo/Logo';
 
 const Register: React.FC = () => {
 	/* #region States, Effects and Hooks */
-	const users = useSelector(selectAll);
 	const [nome, setNome] = useState<string>('');
 	const [ username, setUsername] = useState<string>('');
 	const [ senha, setSenha ] = useState<string>('');
@@ -28,6 +25,7 @@ const Register: React.FC = () => {
 	const { enqueueSnackbar } = useSnackbar();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
 	
 	useEffect(redirectIfLoggedIn, [loggedUser]);
 
@@ -37,11 +35,11 @@ const Register: React.FC = () => {
 	/* #endregion */
 
 	/* #region Checkers: Delegators */
-	function checkValidations(){
+	async function checkValidations(){
 		setValidations({
 			...validations,
 			nomePass: checkNomePass(),
-			usernamePass: checkUsernamePass(),
+			usernamePass: await checkUsernamePass(),
 			senha: {
 				lengthPass: checkSenhaLengthPass(),
 				hasLetterPass: checkSenhaHasLetterPass(),
@@ -56,8 +54,8 @@ const Register: React.FC = () => {
 		setValidations({...validations, nomePass: checkNomePass()});
 	}
 	
-	function checkUsername(){
-		setValidations({...validations, usernamePass: checkUsernamePass()});
+	async function checkUsername(){
+		setValidations({...validations, usernamePass: await checkUsernamePass()});
 	}
 
 	function checkSenha(){
@@ -86,11 +84,16 @@ const Register: React.FC = () => {
 		return nome.length > 2;
 	}	
 
-	function checkUsernamePass(): string{
-		const lengthPass = username.length > 2;
-		const availablePass = users.find(u => u.username === username) === undefined;
+	async function checkUsernamePass(): Promise<'false' | 'unavailable' | 'true'> {
+		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
+		const lengthPass = username.length > 2;
 		if(!lengthPass) return 'false';
+		
+		const availablePass = await axios.post(basePath + 'checkuser', { username })
+			.then(() => false)
+			.catch(() => true);
+
 		if(!availablePass) return 'unavailable';
 
 		return 'true';
@@ -160,28 +163,35 @@ const Register: React.FC = () => {
 
 	function criarConta(e: React.FormEvent<HTMLDivElement>){
 		e.preventDefault();
+		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
 		if(!validations.nomePass || validations.usernamePass !== 'true' || !validations.senha.senhaPass || !validations.confirmSenhaPass) {
 			checkValidations();
 			return;
 		};
 
-		const newUser: User = {
-			id: uuid(),
+		const newUser = {
 			nome,
 			username,
 			senha
 		};
 
-		dispatch(add(newUser));
+		axios.post(basePath + 'user', newUser)
+			.then(async () => {
+				enqueueSnackbar('Conta criada com sucesso!', { variant: 'success' });
 
-		enqueueSnackbar('Conta criada com sucesso!', { variant: 'success' });
-
-		dispatch(setLoggedUser({
-			nome: newUser.nome,
-			username: newUser.username,
-			accessToken: ''
-		}));
+				const serverResponse = await authenticate(newUser.username, newUser.senha);
+				if(!serverResponse) return;
+				
+				dispatch(setLoggedUser({
+					nome: newUser.nome,
+					username: newUser.username,
+					accessToken: serverResponse.access_token
+				}));
+			})
+			.catch(() => {
+				enqueueSnackbar('Erro durante a criação da conta. Tente novamente.', { variant: 'error' });
+			});
 	}
 
 	return (
