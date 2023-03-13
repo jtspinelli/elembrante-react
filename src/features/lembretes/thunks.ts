@@ -20,7 +20,7 @@ export const getLembretes = createAsyncThunk(
 );
 
 export const archiveLembrete = createAsyncThunk(
-	'lembretes/update',
+	'lembretes/archive',
 	async (data: {id: number, accessToken: string}): Promise<number> => {
 		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
@@ -71,6 +71,20 @@ export const createLembrete = createAsyncThunk(
 
 		return await axios.post(basePath + 'lembrete', data.lembrete, {
 			headers: { 
+				access_token: data.accessToken
+			}
+		})
+			.then((response) => response.data as Lembrete)
+			.catch(() => null);
+	}
+);
+
+export const updateLembrete = createAsyncThunk(
+	'lembretes/update',
+	async (data: { lembrete: Lembrete, accessToken: string }): Promise<Lembrete | null> => {
+		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
+		return await axios.put(basePath + 'lembrete/' + data.lembrete.id, data.lembrete, {
+			headers: {
 				access_token: data.accessToken
 			}
 		})

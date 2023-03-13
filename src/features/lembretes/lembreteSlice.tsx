@@ -1,4 +1,4 @@
-import { getLembretes, archiveLembrete, recoverLembrete, removeLembrete, createLembrete } from './thunks';
+import { getLembretes, archiveLembrete, recoverLembrete, removeLembrete, createLembrete, updateLembrete } from './thunks';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Lembrete from '../../app/types/Lembrete';
 
@@ -9,6 +9,7 @@ interface IInitialState {
 	recovering: boolean;
 	deleting: boolean;
 	creating: boolean;
+	updating: boolean;
 }
 
 const initialState: IInitialState = {
@@ -17,7 +18,8 @@ const initialState: IInitialState = {
 	archiving: false,
 	recovering: false,
 	deleting: false,
-	creating: false
+	creating: false,
+	updating: false
 };
 
 const lembreteSlice = createSlice({
@@ -57,8 +59,28 @@ const lembreteSlice = createSlice({
 		addCase(removeLembrete.fulfilled, setDeleting);
 		addCase(createLembrete.pending, setCreating);
 		addCase(createLembrete.fulfilled, add);
+		addCase(updateLembrete.pending, setUpdating);
+		addCase(updateLembrete.fulfilled, update);
 	}
 });
+
+function update(
+	state: IInitialState,
+	action: PayloadAction<Lembrete | null, string, { arg: { lembrete: Lembrete; accessToken: string; }; requestId: string; requestStatus: 'fulfilled' | 'pending'; }, never>
+) {
+	state.updating = false;
+	if(!action.payload) return;
+
+	const lembrete = state.lembretes.find(lembrete => lembrete.id === action.payload?.id);
+	if(!lembrete) return;
+
+	lembrete.titulo = action.payload.titulo;
+	lembrete.descricao = action.payload.descricao;
+}
+
+function setUpdating(state: IInitialState) {
+	state.updating = true;
+}
 
 function add(state: IInitialState, action: PayloadAction<Lembrete | null>) {
 	if(!action.payload) return;
