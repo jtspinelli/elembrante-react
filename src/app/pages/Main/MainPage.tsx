@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import store, { RootState } from '../../store';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { getLembretes as get } from '../../../features/lembretes/thunks';
 import { Box, useTheme } from '@mui/material';
 import { DrawerHeader } from '../../../features/sideBar/styles';
-import { getLembretes } from '../../../features/lembretes/thunks';
 import { useMeasure } from 'react-use';
 import { setWidth } from '../../../features/config/configSlice';
 import { Main } from './styles';
@@ -12,6 +12,7 @@ import Drawer from '../../../features/sideBar/SideBar';
 import AppBar from '../../components/AppBar/AppBar';
 import EditModal from '../../../features/editModal/EditModal';
 import ArquivoPage from '../Arquivo/ArquivoPage';
+import SavingModal from '../../../features/lembretes/SavingModal';
 import useMediaQuery from '@mui/material/useMediaQuery/useMediaQuery';
 import MeusLembretesPage from '../Meus Lembretes/MeusLembretesPage';
 
@@ -23,44 +24,24 @@ const MainPage: React.FC = () => {
 	const upSm = useMediaQuery(theme.breakpoints.up('sm'));
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const { archiving, recovering } = useSelector((state: RootState) => state.lembretesReducer);
 
 	useEffect(redirectIfLoggedOut, []);
+	useEffect(getLembretes, []);
 	useEffect(() => { dispatch(setWidth(mainWidth)); }, [mainWidth]);
-
-	useEffect(() => {
-		if(!loggedUser) return;
-		store.dispatch(getLembretes(loggedUser.accessToken));
-	}, []);
 
 	function redirectIfLoggedOut(){
 		if(!loggedUser) navigate('login');
 	}
 
+	function getLembretes(){
+		if(!loggedUser) return;
+		store.dispatch(get(loggedUser.accessToken));
+	}	
+
 	return (
 		<Box sx={{ display: 'flex' }}>
 			<AppBar />
 			<Drawer />
-
-			{(archiving || recovering) &&
-				<Box sx={{ 
-					backgroundColor: '#00000065', 
-					position: 'absolute', 
-					top: 0, 
-					zIndex: 1200, 
-					left: 0, 
-					width: '100vw', 
-					height: '100vh',
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-					p: {
-						color: 'white'
-					}
-				}}>
-					<p>Pera aí...</p>
-				</Box>	
-			}
 
 			<Main open={open} drawerwidth={width} upSm={upSm}>
 				<DrawerHeader />
@@ -74,6 +55,7 @@ const MainPage: React.FC = () => {
 			</Main>
 
 			<EditModal />
+			<SavingModal />
 		</Box>
 	);
 };

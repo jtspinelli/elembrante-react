@@ -27,7 +27,7 @@ const MeusLembretesPage: React.FC = () => {
 				</Stack>
 			}
 
-			{ lembretes.filter(lembrete => !lembrete.arquivado).map(getCard) }
+			{ !loading && lembretes.filter(lembrete => !lembrete.arquivado).map(getCard) }
 
 			{!loading && !lembretes.filter(lembrete => !lembrete.arquivado).length &&
 				<Typography color={theme.palette.grey[700]}>Use o campo acima para criar um novo Lembrete!</Typography>
