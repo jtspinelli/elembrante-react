@@ -10,6 +10,7 @@ import { RootState } from '../../../app/store';
 import Logo from '../../../app/components/Logo/Logo';
 import axios from 'axios';
 import GoogleLogin from '../../../app/components/GoogleLogin/GoogleLogin';
+import { authenticate } from '../../../app/services/AuthenticationService';
 
 const Login: React.FC = () => {
 	/* #region States, Refs and Hooks */
@@ -67,18 +68,10 @@ const Login: React.FC = () => {
 	/* #endregion */	
 
 	/* #region Authentication/Login */
-	async function authenticate(): Promise<IAuthResponse | null>{
-		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
-
-		return await axios.post(basePath + 'auth', {username, senha})
-			.then((response: {data: IAuthResponse}) => response.data)
-			.catch(() => null );
-	}
-
 	async function login(e: React.FormEvent<HTMLDivElement>){
 		e.preventDefault();
 
-		const serverResponse = await authenticate();
+		const serverResponse = await authenticate(username, senha);
 		if(!serverResponse) return enqueueSnackbar('Senha incorreta.');
 		
 		dispatch(setLoggedUser({
