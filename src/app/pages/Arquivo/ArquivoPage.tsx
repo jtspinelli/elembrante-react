@@ -32,7 +32,12 @@ const ArquivoPage: React.FC = () => {
 					</Stack>
 				}
 
-				{ !loading && lembretes.filter(lembrete => lembrete.arquivado).map(getCard) }
+				{ !loading && 
+					lembretes
+						.filter(lembrete => lembrete.arquivado)
+						.sort((a, b) => a.criadoEm < b.criadoEm ? 1 : -1)
+						.map(getCard) 
+				}
 
 				{ !loading && !lembretes.filter(lembrete => lembrete.arquivado).length && 
 					<Typography color={theme.palette.grey[700]}>Nenhum lembrete arquivado.</Typography>
