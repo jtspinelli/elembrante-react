@@ -8,9 +8,9 @@ import { authenticate } from '../../../app/services/AuthenticationService';
 import { useSnackbar } from 'notistack';
 import { setLoading } from '../../config/configSlice';
 import { RootState } from '../../../app/store';
-import Logo from '../../../app/components/Logo/Logo';
-import axios from 'axios';
 import GoogleLogin from '../../../app/components/GoogleLogin/GoogleLogin';
+import axios from 'axios';
+import Logo from '../../../app/components/Logo/Logo';
 
 const Login: React.FC = () => {
 	/* #region States, Refs and Hooks */
