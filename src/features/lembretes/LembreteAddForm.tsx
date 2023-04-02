@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+import store, { RootState } from '../../app/store';
 import { BoxDetalhamento, BoxTitulo, CustomPaper, Placeholder, TextBoxDetalhamento, TextBoxTitulo } from './formStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { addLembrete } from './lembreteSlice';
+import { createLembrete } from './thunks';
+import { useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { v4 as uuid } from 'uuid';
-import { RootState } from '../../app/store';
-import Lembrete from '../../app/types/Lembrete';
+import LembretePhantom from '../../app/types/LembretePhantom';
 
 const Form: React.FC = () => {
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
@@ -15,8 +14,6 @@ const Form: React.FC = () => {
 	const formIsExpanded = useRef(formExpanded);
 	const detalhamentoTextbox = useRef<HTMLDivElement>();
 	const tituloTextbox = useRef<HTMLDivElement>();
-
-	const dispatch = useDispatch();
 
 	useEffect(() => document.body.addEventListener('click', collapseFormIfOutsideClick), []);	
 	
@@ -30,30 +27,31 @@ const Form: React.FC = () => {
 
 		if(clickedOutsideForm && formIsExpanded.current){
 			if(detalhamentoTextbox.current?.innerText.length || tituloTextbox.current?.innerText.length){
-				createLembrete();
+				add();
 				return;
 			}
 			resetForm();
 		}
 	};
 
-	function createLembrete(){
+	function add(){
 		if(!loggedUser) return;
+
+		if(!tituloTextbox.current || !detalhamentoTextbox.current) return;
 		
-		const lembrete: Lembrete = {
-			id: uuid(),
+		const lembrete: LembretePhantom = {
 			criadoEm: new Date(),
-			descricao: tituloTextbox.current?.innerText.length ? tituloTextbox.current?.innerText : null,
-			detalhamento: detalhamentoTextbox.current?.innerText.length ? detalhamentoTextbox.current?.innerText : null,
-			excluido: false,
-			userId: loggedUser.id
+			titulo: tituloTextbox.current.innerText.length ? tituloTextbox.current.innerText : '',
+			descricao: detalhamentoTextbox.current.innerText.length ? detalhamentoTextbox.current.innerText : '',
+			arquivado: false
 		};
 
-		dispatch(addLembrete(lembrete));
+		store.dispatch(createLembrete({ lembrete, accessToken: loggedUser.accessToken }))
+			.then(() => {
+				enqueueSnackbar('Lembrete criado!', { variant: 'success', autoHideDuration: 2000 });
 
-		enqueueSnackbar('Lembrete criado!', { variant: 'success', autoHideDuration: 2000 });
-
-		resetForm();
+				resetForm();
+			});		
 	}
 
 	function collapseForm(){

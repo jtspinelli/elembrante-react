@@ -8,13 +8,13 @@ import UsersSlice from '../features/users/usersSlice';
 import LoggedUserSlice from '../features/users/LoggedUserSlice';
 import configSlice from '../features/config/configSlice';
 
-const persistedReducer = persistReducer({ key: 'lembretes', storage }, lembreteSlice.reducer);
+// const persistedReducer = persistReducer({ key: 'lembretes', storage }, lembreteSlice.reducer);
 const persistedUsers = persistReducer({ key:'users', storage }, UsersSlice.reducer);
 const persistedLoggedUser = persistReducer({key: 'loggedUser', storage}, LoggedUserSlice.reducer);
 
 const store = configureStore({
 	reducer: {
-		lembretesReducer: persistedReducer,
+		lembretesReducer: lembreteSlice.reducer,
 		usersReducer: persistedUsers,
 		loggedUsersReducer: persistedLoggedUser,
 		sideBarReducer: sideBarSlice.reducer,

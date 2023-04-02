@@ -1,23 +1,24 @@
 import React from 'react';
+import store, { RootState } from '../../app/store';
 import { Actions, Detalhamento, LembreteContainer, Titulo } from './styles';
 import { setModalOpen, setLembrete } from '../editModal/editModalSlice';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import { LembreteCardProps } from './interface';
-import { updateLembrete } from './lembreteSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { LembreteCardProps } from './interface';
+import { recoverLembrete } from './thunks';
 import { useSnackbar } from 'notistack';
-import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
-import useSafeRemove from '../../app/services/useSafeRemove';
-import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
-import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
-import { RootState } from '../../app/store';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import ArchiveIcon from '@mui/icons-material/ArchiveOutlined';
+import useSafeRemove from '../../app/services/useSafeRemove';
+import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
 
 const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => {
 	const dispatch = useDispatch();
 	const { safeRemove, safeArchive } = useSafeRemove();
 	const { enqueueSnackbar } = useSnackbar();
 	const { mainWidth } = useSelector((state: RootState) => state.configReducer);
+	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 	
 	function edit(){
 		dispatch(setModalOpen(true)); 
@@ -25,28 +26,26 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 	}
 
 	function bringBack(){
-		dispatch(updateLembrete({
-			id: props.lembrete.id,
-			changes: {
-				excluido: false
-			}
-		}));
+		if(!loggedUser) return;
 
-		enqueueSnackbar('Lembrete recuperado!', { variant: 'success', autoHideDuration: 2000 });
+		store.dispatch(recoverLembrete({ id: props.lembrete.id, accessToken: loggedUser.accessToken }))
+			.then(() => {
+				enqueueSnackbar('Lembrete recuperado!', { variant: 'success', autoHideDuration: 2000 });
+			});		
 	}
 
 	function getTitulo(){
-		if(!props.lembrete.descricao) return;
+		if(!props.lembrete.titulo) return;
 		
-		if(props.lembrete.descricao.length < 30) return props.lembrete.descricao;
-		return props.lembrete.descricao.substring(0, 30) + '...';
+		if(props.lembrete.titulo.length < 30) return props.lembrete.titulo;
+		return props.lembrete.titulo.substring(0, 30) + '...';
 	}
 
 	function getDetalhamento(){
-		if(!props.lembrete.detalhamento) return;
+		if(!props.lembrete.descricao) return;
 
-		if(props.lembrete.detalhamento.length < 60) return props.lembrete.detalhamento;
-		return props.lembrete.detalhamento.substring(0, 60) + '...';
+		if(props.lembrete.descricao.length < 60) return props.lembrete.descricao;
+		return props.lembrete.descricao.substring(0, 60) + '...';
 	}
 
 	return (

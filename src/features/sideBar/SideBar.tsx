@@ -1,7 +1,7 @@
 import React from 'react';
 import { IconButton, useTheme, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText, useMediaQuery } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
 import { Drawer, DrawerHeader, List, ActiveMark } from './styles';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { setOpen } from './sideBarSlice';
 import { NavLink } from 'react-router-dom';

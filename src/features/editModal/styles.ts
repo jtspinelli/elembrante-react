@@ -20,6 +20,7 @@ export const TextBoxTitulo = styled(Box)({
 	outline: 'none'
 });
 TextBoxTitulo.defaultProps = {
+	id: 'form-titulo',
 	component: 'div',
 	role: 'textbox',
 	contentEditable: 'true',
@@ -45,4 +46,14 @@ export const Actions = styled(Box)(({theme})=>({
 	'& .MuiButtonBase-root:hover': {
 		color: theme.palette.primary.main
 	}
+}));
+
+export const Placeholder = styled(Box)(() => ({
+	fontFamily: 'Roboto',
+	opacity: .71, 
+	position: 'absolute',
+	bottom: '5px', 
+	left: '16px',
+	pointerEvents: 'none',
+	fontSize: '20px'
 }));

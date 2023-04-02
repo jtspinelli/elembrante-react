@@ -1,7 +1,7 @@
 interface UserViewModel {
-	id: string;
 	nome: string;
 	username: string;
+	accessToken: string;
 }
 
 export default UserViewModel;

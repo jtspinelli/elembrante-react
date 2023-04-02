@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import store, { RootState } from '../store';
+import { archiveOne, recoverOne, removeOne, undoRemove } from '../../features/lembretes/lembreteSlice';
+import { archiveLembrete, removeLembrete } from '../../features/lembretes/thunks';
 import { SnackbarKey, useSnackbar } from 'notistack';
-import Lembrete from '../types/Lembrete';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@mui/material';
-import { setModalOpen } from '../../features/editModal/editModalSlice';
-import { useDispatch } from 'react-redux';
-import { addLembrete, removeLembrete, updateLembrete } from '../../features/lembretes/lembreteSlice';
+import Lembrete from '../types/Lembrete';
 
 const useSafeRemove = () => {
 	const [ lembrete, setLemb ] = useState<Lembrete>();
 	const [ operation, _setOperation ] = useState<string>('');
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 	const dispatch = useDispatch();
+	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 
 	function safeRemove(lembrete: Lembrete){
 		setOperation('delete', lembrete);
@@ -26,23 +28,22 @@ const useSafeRemove = () => {
 	}
 
 	useEffect(() => {
-		if(!lembrete) return;
+		if(!lembrete || !loggedUser) return;
 
-		if(operation === 'delete') dispatch(removeLembrete(lembrete.id));
-		if(operation === 'archive') dispatch(updateLembrete({ id: lembrete.id, changes: { excluido: true } }));
+		if(operation === 'archive') dispatch(archiveOne(lembrete.id));
+		if(operation === 'delete') dispatch(removeOne(lembrete.id));
 
 		showSnackbar();
-
-		dispatch(setModalOpen(false));
 	}, [lembrete]);
 
-	function revertRemove(lembrete: Lembrete, key: SnackbarKey){
-		dispatch(addLembrete(lembrete));
+	function revertArchive(lembrete: Lembrete, key: SnackbarKey) {
+		if(!lembrete || !loggedUser) return;
+		dispatch(recoverOne(lembrete.id));
 		closeSnackbar(key);
 	}
 
-	function revertArchive(lembrete: Lembrete, key: SnackbarKey){
-		dispatch(updateLembrete({id: lembrete.id, changes: { excluido: false }}));
+	function revertRemove(lembrete: Lembrete, key: SnackbarKey) {
+		dispatch(undoRemove(lembrete));
 		closeSnackbar(key);
 	}
 
@@ -52,6 +53,19 @@ const useSafeRemove = () => {
 				if(!lembrete) return <></>;
 				const revert = () => operation === 'delete' ? revertRemove(lembrete, key) : revertArchive(lembrete, key);
 				return <Button sx={{ color: 'orange' }} onClick={revert}>Desfazer</Button>;
+			},
+			onClose: (_, reason) => {
+				if(!lembrete || !loggedUser) return;
+
+				if(reason === 'timeout' && operation === 'archive') {
+					//persist archive
+					store.dispatch(archiveLembrete({ id: lembrete.id, accessToken: loggedUser.accessToken }));
+				}
+
+				if(reason === 'timeout' && operation === 'delete') {
+					//persist delete
+					store.dispatch(removeLembrete({ id: lembrete.id, accessToken: loggedUser.accessToken }));
+				}
 			}
 		});
 	}

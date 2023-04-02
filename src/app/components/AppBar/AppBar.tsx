@@ -9,6 +9,7 @@ import { setOpen } from '../../../features/sideBar/sideBarSlice';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import Icon from '../AppIcon/AppIcon';
+import { destroyAll } from '../../../features/lembretes/lembreteSlice';
 
 const CustomAppBar: React.FC<AppBarProps> = () => {	
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -35,6 +36,7 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 
 	function logout(){
 		dispatch(setLoggedUser(null));
+		dispatch(destroyAll());
 		navigate('/login');
 	}
 

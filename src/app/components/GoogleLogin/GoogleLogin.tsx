@@ -1,54 +1,44 @@
 import React from 'react';
 import { CredentialResponse, GoogleLogin as OauthGoogleLogin } from '@react-oauth/google';
-import { useDispatch, useSelector } from 'react-redux';
-import { add, selectAll } from '../../../features/users/usersSlice';
 import { setLoggedUser } from '../../../features/users/LoggedUserSlice';
+import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { v4 as uuid } from 'uuid';
-import jwt_decode from 'jwt-decode';
-import User from '../../types/User';
+import axios, { AxiosResponse } from 'axios';
 
 const GoogleLogin: React.FC = () => {
-	const users = useSelector(selectAll);
 	const { enqueueSnackbar } = useSnackbar();
 	const dispatch = useDispatch();
 
-	function createUser(user: User){
-		dispatch(add(user));
-	}
+	const googleLogin = (credential: string) => {
+		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
-	function logUserIn(user: User){
-		dispatch(setLoggedUser({
-			id: user.id,
-			nome: user.nome,
-			username: user.username
-		}));
-	}
+		return new Promise<AxiosResponse>((resolve) => {
+			axios.post(basePath + 'googlelogin', {credential})
+				.then(data => resolve(data));
+		});
+	};
 
 	const onError = () => {
 		enqueueSnackbar('erro ao comunicar com o servidor', { variant:'error' });
 	};
 
-	const onSuccess = (response: CredentialResponse) => {
+	const onSuccess = async (response: CredentialResponse) => {
 		if(!response.credential) return;
 
-		const userInfo: { email: string, name: string } = jwt_decode(response.credential);
+		try {
+			const authentication = await googleLogin(response.credential);
 
-		const foundUser = users.find(u => u.username === userInfo.email);
-		if(foundUser){
-			logUserIn(foundUser);
-			return;
+			if(authentication.data.access_token) {
+				dispatch(setLoggedUser({
+					nome: authentication.data.userData.nome,
+					username: authentication.data.userData.username,
+					accessToken: authentication.data.access_token
+				}));
+				return;
+			}
+		} catch {
+			enqueueSnackbar('falha na autenticação', { variant:'error' });
 		}
-				
-		const newUser: User = {
-			id: uuid(),
-			nome: userInfo.name,
-			username: userInfo.email,
-			senha: ''
-		};
-
-		createUser(newUser);
-		logUserIn(newUser);
 	};
 
 	return (

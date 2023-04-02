@@ -1,6 +1,6 @@
-import React, { MutableRefObject, useEffect } from 'react';
-import { Actions, TextBoxDetalhamento, TextBoxTitulo } from './styles';
-import { IconButton, Tooltip } from '@mui/material';
+import React, { MutableRefObject, useEffect, useState } from 'react';
+import { Actions, Placeholder, TextBoxDetalhamento, TextBoxTitulo } from './styles';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import useSafeRemove from '../../app/services/useSafeRemove';
@@ -9,9 +9,18 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>, detalhamento: MutableRefObject<HTMLElement | undefined>}}> = (props: {refs: { titulo: MutableRefObject<HTMLElement | undefined>, detalhamento: MutableRefObject<HTMLElement | undefined>}}) => {
 	const { lembrete } = useSelector((state: RootState) => state.editModalReducer);
+	const [ showTitlePlaceholder, setShowTitlePlaceholder ] = useState<boolean>(false);
 	const { safeRemove, safeArchive } = useSafeRemove();
 
 	useEffect(positionCaret, []);
+	useEffect(() => {
+		setShowTitlePlaceholder(props.refs.titulo.current?.innerText.length === 0);
+	}, []);	
+
+	function handlePlaceholder(e: React.FormEvent<HTMLDivElement>){
+		const inputValueIsEmpty = !(e.target as HTMLElement).innerText.length;
+		setShowTitlePlaceholder(inputValueIsEmpty ?? false);
+	}
 
 	function positionCaret(){
 		if(!props.refs.detalhamento.current) return;
@@ -19,7 +28,7 @@ const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>,
 		const range = document.createRange();
 		const sel = window.getSelection();
 
-		range.setStart(props.refs.detalhamento.current.childNodes[0],lembrete?.detalhamento?.length ?? 0);
+		range.setStart(props.refs.detalhamento.current.childNodes[0],lembrete?.descricao?.length ?? 0);
 		range.collapse(true);
 
 		sel?.removeAllRanges();
@@ -38,12 +47,16 @@ const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>,
 
 	return (
 		<>
-			<TextBoxTitulo ref={props.refs.titulo}>
-				{ lembrete && lembrete.descricao }
-			</TextBoxTitulo>
+			<Box sx={{ position: 'relative' }}>
+				<TextBoxTitulo ref={props.refs.titulo} onInput={handlePlaceholder}>
+					{ lembrete && lembrete.titulo }
+				</TextBoxTitulo>
+
+				{ showTitlePlaceholder && <Placeholder for-titulo="true" form-expanded={'false'}> Título </Placeholder> }
+			</Box>
 
 			<TextBoxDetalhamento ref={props.refs.detalhamento}> 
-				{ lembrete && lembrete.detalhamento }
+				{ lembrete && lembrete.descricao }
 			</TextBoxDetalhamento>
 
 			<Actions>
