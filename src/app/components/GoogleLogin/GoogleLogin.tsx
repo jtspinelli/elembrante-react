@@ -31,8 +31,7 @@ const GoogleLogin: React.FC = () => {
 			if(authentication.data.access_token) {
 				dispatch(setLoggedUser({
 					nome: authentication.data.userData.nome,
-					username: authentication.data.userData.username,
-					accessToken: authentication.data.access_token
+					username: authentication.data.userData.username
 				}));
 				return;
 			}

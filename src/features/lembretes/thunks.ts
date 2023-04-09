@@ -1,33 +1,31 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import Lembrete from '../../app/types/Lembrete';
 import LembretePhantom from '../../app/types/LembretePhantom';
 
 export const getLembretes = createAsyncThunk(
 	'lembretes/all',
-	async (accessToken: string): Promise<Lembrete[]> => {
+	async (): Promise<Lembrete[]> => {
 		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
 		return await axios
 			.get(basePath + 'lembretes', {
-				headers: {
-					access_token: accessToken
-				}
+				withCredentials: true
 			})
 			.then((response) => response.data)
-			.catch(() => {return;});
+			.catch((e: AxiosError) => {
+				return e;
+			});
 	}
 );
 
 export const archiveLembrete = createAsyncThunk(
 	'lembretes/archive',
-	async (data: {id: number, accessToken: string}): Promise<number> => {
+	async (data: {id: number}): Promise<number> => {
 		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
 		return await axios.put(basePath + 'lembrete/archive/' + data.id, {}, {
-			headers: {
-				access_token: data.accessToken
-			}
+			withCredentials: true
 		})
 			.then(() => data.id)
 			.catch(() => -1);
@@ -36,13 +34,11 @@ export const archiveLembrete = createAsyncThunk(
 
 export const recoverLembrete = createAsyncThunk(
 	'lembretes/recover',
-	async (data: { id: number, accessToken: string }): Promise<number> => {
+	async (data: { id: number }): Promise<number> => {
 		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
 		return await axios.put(basePath + 'lembrete/recover/' + data.id, {}, {
-			headers: {
-				access_token: data.accessToken
-			}
+			withCredentials: true
 		})
 			.then(() => data.id)
 			.catch(() => -1);
@@ -51,13 +47,11 @@ export const recoverLembrete = createAsyncThunk(
 
 export const removeLembrete = createAsyncThunk(
 	'lembretes/remove',
-	async (data: { id: number, accessToken: string }): Promise<boolean> => {
+	async (data: { id: number}): Promise<boolean> => {
 		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
 		return await axios.delete(basePath + 'lembrete/' + data.id, {
-			headers: {
-				access_token: data.accessToken
-			}
+			withCredentials: true
 		})
 			.then(() => true)
 			.catch(() => false);
@@ -66,13 +60,11 @@ export const removeLembrete = createAsyncThunk(
 
 export const createLembrete = createAsyncThunk(
 	'lembretes/create',
-	async (data: { lembrete: LembretePhantom, accessToken: string }): Promise<Lembrete | null> => {
+	async (data: { lembrete: LembretePhantom }): Promise<Lembrete | null> => {
 		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 
 		return await axios.post(basePath + 'lembrete', data.lembrete, {
-			headers: { 
-				access_token: data.accessToken
-			}
+			withCredentials: true
 		})
 			.then((response) => response.data as Lembrete)
 			.catch(() => null);
@@ -81,12 +73,10 @@ export const createLembrete = createAsyncThunk(
 
 export const updateLembrete = createAsyncThunk(
 	'lembretes/update',
-	async (data: { lembrete: Lembrete, accessToken: string }): Promise<Lembrete | null> => {
+	async (data: { lembrete: Lembrete }): Promise<Lembrete | null> => {
 		const basePath = process.env.REACT_APP_SERVER_BASE_PATH as string;
 		return await axios.put(basePath + 'lembrete/' + data.lembrete.id, data.lembrete, {
-			headers: {
-				access_token: data.accessToken
-			}
+			withCredentials: true
 		})
 			.then((response) => response.data as Lembrete)
 			.catch(() => null);

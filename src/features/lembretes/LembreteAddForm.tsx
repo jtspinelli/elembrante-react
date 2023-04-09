@@ -46,7 +46,7 @@ const Form: React.FC = () => {
 			arquivado: false
 		};
 
-		store.dispatch(createLembrete({ lembrete, accessToken: loggedUser.accessToken }))
+		store.dispatch(createLembrete({ lembrete }))
 			.then(() => {
 				enqueueSnackbar('Lembrete criado!', { variant: 'success', autoHideDuration: 2000 });
 

@@ -1,6 +1,7 @@
 import { getLembretes, archiveLembrete, recoverLembrete, removeLembrete, createLembrete, updateLembrete } from './thunks';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Lembrete from '../../app/types/Lembrete';
+import { AxiosError } from 'axios';
 
 interface IInitialState {
 	lembretes: Lembrete[],
@@ -66,7 +67,7 @@ const lembreteSlice = createSlice({
 
 function update(
 	state: IInitialState,
-	action: PayloadAction<Lembrete | null, string, { arg: { lembrete: Lembrete; accessToken: string; }; requestId: string; requestStatus: 'fulfilled' | 'pending'; }, never>
+	action: PayloadAction<Lembrete | null, string, { arg: { lembrete: Lembrete }; requestId: string; requestStatus: 'fulfilled' | 'pending'; }, never>
 ) {
 	state.updating = false;
 	if(!action.payload) return;
@@ -118,7 +119,7 @@ function setRecovering(state: IInitialState) {
 
 function setDeleting(
 	state: IInitialState, 
-	action:PayloadAction<boolean | undefined, string, { arg: { id: number; accessToken: string; }; requestId: string; requestStatus: 'fulfilled' | 'pending'; }, never>
+	action:PayloadAction<boolean | undefined, string, { arg: { id: number }; requestId: string; requestStatus: 'fulfilled' | 'pending'; }, never>
 ) {
 	state.deleting = action.meta.requestStatus === 'pending';
 }
@@ -133,9 +134,15 @@ function loading(state: IInitialState){
 
 function set(
 	state: IInitialState,
-	action: PayloadAction<Lembrete[]>
+	action: PayloadAction<Lembrete[] | AxiosError>
 ) {
-	state.lembretes = action.payload;
+	if(action.payload instanceof AxiosError) {
+		state.lembretes = [];
+	}
+
+	if(!(action.payload instanceof AxiosError)) {
+		state.lembretes = action.payload;
+	}
 	state.loading = false;
 }
 

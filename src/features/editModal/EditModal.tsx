@@ -39,7 +39,7 @@ const EditModal: React.FC = () => {
 			usuarioId: lembrete.usuarioId
 		};
 
-		store.dispatch(updateLembrete({ lembrete: obj, accessToken: loggedUser.accessToken }))
+		store.dispatch(updateLembrete({ lembrete: obj }))
 			.then(() => {
 				enqueueSnackbar('Lembrete atualizado.', { variant: 'success', autoHideDuration: 2000 });		
 				dispatch(setModalOpen(false));
