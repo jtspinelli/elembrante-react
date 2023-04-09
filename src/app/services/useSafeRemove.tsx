@@ -59,12 +59,12 @@ const useSafeRemove = () => {
 
 				if(reason === 'timeout' && operation === 'archive') {
 					//persist archive
-					store.dispatch(archiveLembrete({ id: lembrete.id, accessToken: loggedUser.accessToken }));
+					store.dispatch(archiveLembrete({ id: lembrete.id }));
 				}
 
 				if(reason === 'timeout' && operation === 'delete') {
 					//persist delete
-					store.dispatch(removeLembrete({ id: lembrete.id, accessToken: loggedUser.accessToken }));
+					store.dispatch(removeLembrete({ id: lembrete.id }));
 				}
 			}
 		});

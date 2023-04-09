@@ -28,7 +28,7 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 	function bringBack(){
 		if(!loggedUser) return;
 
-		store.dispatch(recoverLembrete({ id: props.lembrete.id, accessToken: loggedUser.accessToken }))
+		store.dispatch(recoverLembrete({ id: props.lembrete.id }))
 			.then(() => {
 				enqueueSnackbar('Lembrete recuperado!', { variant: 'success', autoHideDuration: 2000 });
 			});		

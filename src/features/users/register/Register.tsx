@@ -192,8 +192,7 @@ const Register: React.FC = () => {
 				
 				dispatch(setLoggedUser({
 					nome: newUser.nome,
-					username: newUser.username,
-					accessToken: serverResponse.access_token
+					username: newUser.username
 				}));
 			})
 			.catch(() => {

@@ -11,6 +11,7 @@ import { RootState } from '../../../app/store';
 import GoogleLogin from '../../../app/components/GoogleLogin/GoogleLogin';
 import axios from 'axios';
 import Logo from '../../../app/components/Logo/Logo';
+import Cookies from 'universal-cookie';
 
 const Login: React.FC = () => {
 	/* #region States, Refs and Hooks */
@@ -80,11 +81,13 @@ const Login: React.FC = () => {
 			enqueueSnackbar('Senha incorreta.');
 			return;
 		};
+
+		const cookies = new Cookies();
+		cookies.set('token', serverResponse.headerPayload, { path: '/', secure: true });
 		
 		dispatch(setLoggedUser({
 			nome: serverResponse.userData.nome,
-			username: serverResponse.userData.username,
-			accessToken: serverResponse.access_token
+			username: serverResponse.userData.username
 		}));
 	}
 	/* #endregion */	

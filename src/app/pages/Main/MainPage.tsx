@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import store, { RootState } from '../../store';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import { clearServerError, setWidth } from '../../../features/config/configSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLembretes as get } from '../../../features/lembretes/thunks';
 import { Box, useTheme } from '@mui/material';
 import { DrawerHeader } from '../../../features/sideBar/styles';
+import { useSnackbar } from 'notistack';
 import { useMeasure } from 'react-use';
-import { setWidth } from '../../../features/config/configSlice';
 import { Main } from './styles';
 import Drawer from '../../../features/sideBar/SideBar';
 import AppBar from '../../components/AppBar/AppBar';
@@ -19,7 +20,9 @@ import MeusLembretesPage from '../Meus Lembretes/MeusLembretesPage';
 const MainPage: React.FC = () => {
 	const { open, width } = useSelector((state: RootState) => state.sideBarReducer);
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
+	const { serverError } = useSelector((state: RootState) => state.configReducer);
 	const [ ref, { width: mainWidth } ] = useMeasure();
+	const { enqueueSnackbar } = useSnackbar();
 	const theme = useTheme();
 	const upSm = useMediaQuery(theme.breakpoints.up('sm'));
 	const navigate = useNavigate();
@@ -28,14 +31,28 @@ const MainPage: React.FC = () => {
 	useEffect(redirectIfLoggedOut, []);
 	useEffect(getLembretes, []);
 	useEffect(() => { dispatch(setWidth(mainWidth)); }, [mainWidth]);
+	useEffect(redirectIfSessionExpired, [loggedUser]);
+	useEffect(showServerErrorMessage, [serverError]);
+	
+	function redirectIfSessionExpired(){
+		if(!loggedUser) {
+			enqueueSnackbar('Sua sessão expirou. Entre novamente');
+			navigate('login');
+		}
+	}
 
-	function redirectIfLoggedOut(){
+	function redirectIfLoggedOut(){		
 		if(!loggedUser) navigate('login');
+	}
+
+	function showServerErrorMessage(){
+		enqueueSnackbar('Erro no servidor');
+		dispatch(clearServerError());
 	}
 
 	function getLembretes(){
 		if(!loggedUser) return;
-		store.dispatch(get(loggedUser.accessToken));
+		store.dispatch(get());
 	}	
 
 	return (
