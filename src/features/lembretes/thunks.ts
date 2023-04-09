@@ -14,6 +14,7 @@ export const getLembretes = createAsyncThunk(
 			})
 			.then((response) => response.data)
 			.catch((e: AxiosError) => {
+				console.log(e);
 				return e;
 			});
 	}

@@ -46,7 +46,7 @@ const MainPage: React.FC = () => {
 	}
 
 	function showServerErrorMessage(){
-		enqueueSnackbar('Erro no servidor');
+		if(serverError) enqueueSnackbar('Erro no servidor');
 		dispatch(clearServerError());
 	}
 
