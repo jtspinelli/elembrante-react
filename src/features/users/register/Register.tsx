@@ -14,6 +14,7 @@ import { setLoading } from '../../config/configSlice';
 import { RootState } from '../../../app/store';
 import Logo from '../../../app/components/Logo/Logo';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 const Register: React.FC = () => {
 	/* #region States, Effects and Hooks */
@@ -118,7 +119,6 @@ const Register: React.FC = () => {
 
 	function checkSenhaPass(){
 		const senhaMatch = senha.match(senhaRegex);
-		console.log(senhaMatch);
 		return senhaMatch !== null && senhaMatch[0] === senha;
 	}	
 
@@ -190,6 +190,9 @@ const Register: React.FC = () => {
 					dispatch(setLoading(false));
 					return;
 				};
+
+				const cookies = new Cookies();
+				cookies.set('token', serverResponse.headerPayload, { path: '/', secure: true });
 				
 				dispatch(setLoggedUser({
 					nome: newUser.nome,
