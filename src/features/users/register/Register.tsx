@@ -118,6 +118,7 @@ const Register: React.FC = () => {
 
 	function checkSenhaPass(){
 		const senhaMatch = senha.match(senhaRegex);
+		console.log(senhaMatch);
 		return senhaMatch !== null && senhaMatch[0] === senha;
 	}	
 
@@ -180,7 +181,7 @@ const Register: React.FC = () => {
 
 		dispatch(setLoading(true));
 
-		axios.post(basePath + 'user', newUser)
+		axios.post(basePath + 'user', newUser, { withCredentials: true })
 			.then(async () => {
 				enqueueSnackbar('Conta criada com sucesso!', { variant: 'success' });
 
