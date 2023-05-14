@@ -13,7 +13,7 @@ import { useSnackbar } from 'notistack';
 import { setLoading } from '../../config/configSlice';
 import { RootState } from '../../../app/store';
 import Logo from '../../../app/components/Logo/Logo';
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import Cookies from 'universal-cookie';
 
 const Register: React.FC = () => {
@@ -93,8 +93,9 @@ const Register: React.FC = () => {
 		if(!lengthPass) return 'false';
 		
 		const availablePass = await axios.post(basePath + 'checkuser', { username })
-			.then(() => false)
-			.catch(() => true);
+			.then((response: AxiosResponse | AxiosError) => {
+				return response instanceof AxiosError && response.response?.status === 404; // username not found so available
+			});
 
 		if(!availablePass) return 'unavailable';
 
