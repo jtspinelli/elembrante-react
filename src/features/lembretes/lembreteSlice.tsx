@@ -47,6 +47,22 @@ const lembreteSlice = createSlice({
 		},
 		undoRemove(state, action: PayloadAction<Lembrete>) {
 			state.lembretes = [...state.lembretes, action.payload];
+		},
+		addOne(state, action: PayloadAction<Lembrete>) {			
+			state.lembretes = [...state.lembretes, action.payload];
+		},
+		finishCreate(state, action: PayloadAction<{id: number, usuarioId: string}>) {
+			const justAdded = state.lembretes.find(l => l.id === undefined);
+			if(!justAdded) return;
+			justAdded.id = action.payload.id;
+			justAdded.usuarioId = action.payload.usuarioId;
+		},
+		updateOne(state, action: PayloadAction<{ id: number, titulo: string, descricao: string }>) {
+			const lembrete = state.lembretes.find(l => l.id === action.payload.id);
+			if(!lembrete) return;
+
+			lembrete.titulo = action.payload.titulo;
+			lembrete.descricao = action.payload.descricao;
 		}
 	},
 	extraReducers({ addCase }) {
@@ -85,7 +101,7 @@ function setUpdating(state: IInitialState) {
 
 function add(state: IInitialState, action: PayloadAction<Lembrete | null>) {
 	if(!action.payload) return;
-	state.lembretes = [...state.lembretes, action.payload];
+	// state.lembretes = [...state.lembretes, action.payload];
 	state.creating = false;
 }
 
@@ -147,6 +163,6 @@ function set(
 }
 
 export const { lembretes } = lembreteSlice.getInitialState();
-export const { destroyAll, archiveOne, recoverOne, removeOne, undoRemove } = lembreteSlice.actions;
+export const { destroyAll, archiveOne, recoverOne, removeOne, undoRemove, addOne, finishCreate, updateOne } = lembreteSlice.actions;
 
 export default lembreteSlice;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, IconButton, Menu, MenuItem, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, CircularProgress, IconButton, Menu, MenuItem, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { AppBar, AppBarProps, AppIcon, AppTitle, Toolbar } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoggedUser } from '../../../features/users/LoggedUserSlice';
@@ -15,6 +15,7 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const { open, width } = useSelector((state: RootState) => state.sideBarReducer);
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
+	const { archiving, recovering, deleting, creating, updating } = useSelector((state: RootState) => state.lembretesReducer);
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.up('ssm'));
@@ -64,7 +65,11 @@ const CustomAppBar: React.FC<AppBarProps> = () => {
 				</Box>
 				
 				<Box>
-					{ matches && 
+					{ (archiving || recovering || deleting || creating || updating) && 
+						<CircularProgress sx={{ color: 'white', height: '25px !important', width: '25px !important', margin: '0 15px' }} />
+					}
+					
+					{ matches && 						
 						<Typography>{getLoggedUserFirstName()}</Typography>
 					}
 					

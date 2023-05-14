@@ -12,7 +12,7 @@ const MeusLembretesPage: React.FC = () => {
 	const theme = useTheme();
 
 	function getCard(lembrete: Lembrete){
-		return <LembreteCard lembrete={lembrete} key={lembrete.id} showEdit={true} archived={false}/>;
+		return <LembreteCard lembrete={lembrete} key={lembrete.titulo + '-' + lembrete.id} showEdit={true} archived={false}/>;
 	}
 
 	return <>

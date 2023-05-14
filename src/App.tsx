@@ -3,19 +3,29 @@ import { createBrowserRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import { RouterProvider } from 'react-router';
 import { ThemeProvider } from '@mui/material';
+import { setLoggedUser } from './features/users/LoggedUserSlice';
+import { useDispatch } from 'react-redux';
 import LoginPage from './app/pages/Login/LoginPage';
 import MainPage from './app/pages/Main/MainPage';
 import theme from './theme';
+import axios from 'axios';
 
 const router = createBrowserRouter([
 	{ path: '/*', element: <MainPage />},
 	{ path: '/login/*', element: <LoginPage />},
 	{ path: '/oauth2callback', element: <LoginPage /> }
-
 ]);
 
 const App = () => {
-	return (		
+	const dispatch = useDispatch();
+
+	axios.interceptors.response.use((response) => response, (error) => {
+		if(error.response.data === 'Token não encontrado ou inválido.') {
+			dispatch(setLoggedUser(null));
+		}
+	});
+
+	return (
 		<ThemeProvider theme={theme}>
 			<SnackbarProvider maxSnack={3}>
 				<RouterProvider router={router} />

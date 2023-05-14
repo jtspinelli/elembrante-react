@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import store, { RootState } from '../../app/store';
 import { BoxDetalhamento, BoxTitulo, CustomPaper, Placeholder, TextBoxDetalhamento, TextBoxTitulo } from './formStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { addOne, finishCreate } from './lembreteSlice';
 import { createLembrete } from './thunks';
-import { useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import LembretePhantom from '../../app/types/LembretePhantom';
+import Lembrete from '../../app/types/Lembrete';
 
 const Form: React.FC = () => {
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
@@ -14,6 +16,7 @@ const Form: React.FC = () => {
 	const formIsExpanded = useRef(formExpanded);
 	const detalhamentoTextbox = useRef<HTMLDivElement>();
 	const tituloTextbox = useRef<HTMLDivElement>();
+	const dispatch = useDispatch();
 
 	useEffect(() => document.body.addEventListener('click', collapseFormIfOutsideClick), []);	
 	
@@ -25,7 +28,7 @@ const Form: React.FC = () => {
 	const collapseFormIfOutsideClick = (e:MouseEvent) => {
 		const clickedOutsideForm = !(e.target as HTMLElement).id.includes('form');
 
-		if(clickedOutsideForm && formIsExpanded.current){
+		if(clickedOutsideForm && formIsExpanded.current){			
 			if(detalhamentoTextbox.current?.innerText.length || tituloTextbox.current?.innerText.length){
 				add();
 				return;
@@ -37,7 +40,7 @@ const Form: React.FC = () => {
 	function add(){
 		if(!loggedUser) return;
 
-		if(!tituloTextbox.current || !detalhamentoTextbox.current) return;
+		if(!tituloTextbox.current || !detalhamentoTextbox.current) return;		
 		
 		const lembrete: LembretePhantom = {
 			criadoEm: new Date(),
@@ -46,12 +49,21 @@ const Form: React.FC = () => {
 			arquivado: false
 		};
 
-		store.dispatch(createLembrete({ lembrete }))
-			.then(() => {
-				enqueueSnackbar('Lembrete criado!', { variant: 'success', autoHideDuration: 2000 });
+		resetForm();
+		
+		dispatch(addOne(lembrete as Lembrete));
 
-				resetForm();
-			});		
+		store.dispatch(createLembrete({ lembrete }))
+			.then((response) => {
+				if(!response.payload) return;
+
+				enqueueSnackbar('Lembrete salvo!', { variant: 'success', autoHideDuration: 2000 });
+				
+				dispatch(finishCreate({
+					id: (response.payload as Lembrete).id,
+					usuarioId: (response.payload as Lembrete).usuarioId
+				}));
+			});
 	}
 
 	function collapseForm(){

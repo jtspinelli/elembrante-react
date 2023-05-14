@@ -17,6 +17,7 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 	const dispatch = useDispatch();
 	const { safeRemove, safeArchive } = useSafeRemove();
 	const { enqueueSnackbar } = useSnackbar();
+	const { updating, recovering } = useSelector((state: RootState) => state.lembretesReducer);
 	const { mainWidth } = useSelector((state: RootState) => state.configReducer);
 	const { loggedUser } = useSelector((state: RootState) => state.loggedUsersReducer);
 	
@@ -29,7 +30,8 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 		if(!loggedUser) return;
 
 		store.dispatch(recoverLembrete({ id: props.lembrete.id }))
-			.then(() => {
+			.then((response) => {
+				if(!response.payload) return;
 				enqueueSnackbar('Lembrete recuperado!', { variant: 'success', autoHideDuration: 2000 });
 			});		
 	}
@@ -57,16 +59,22 @@ const LembreteCard: React.FC<LembreteCardProps> = (props: LembreteCardProps) => 
 		
 			<Actions id="action-area">
 				<Tooltip title="excluir">
-					<IconButton onClick={() => { safeRemove(props.lembrete); }}> <DeleteIcon /> </IconButton>
+					<span>
+						<IconButton disabled={!props.lembrete.id || updating || recovering} onClick={() => { safeRemove(props.lembrete); }}> <DeleteIcon /> </IconButton>
+					</span>
 				</Tooltip>
 				{ props.showEdit &&
 					<>
 						<Tooltip title="arquivar">
-							<IconButton onClick={() => { safeArchive(props.lembrete); }}> <ArchiveIcon /> </IconButton>
+							<span>
+								<IconButton disabled={!props.lembrete.id || updating || recovering} onClick={() => { safeArchive(props.lembrete); }}> <ArchiveIcon /> </IconButton>
+							</span>
 						</Tooltip>
 
 						<Tooltip title="editar">
-							<IconButton onClick={edit}> <EditIcon /> </IconButton>
+							<span>
+								<IconButton disabled={!props.lembrete.id || updating || recovering} onClick={edit}> <EditIcon /> </IconButton>
+							</span>
 						</Tooltip>
 					</>					
 				}

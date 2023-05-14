@@ -6,6 +6,7 @@ import { setModalOpen } from './editModalSlice';
 import { useSnackbar } from 'notistack';
 import { Box, Modal } from '@mui/material';
 import { modalStyle } from './styles';
+import { updateOne } from '../lembretes/lembreteSlice';
 import Edit from './Edit';
 
 const EditModal: React.FC = () => {
@@ -39,11 +40,14 @@ const EditModal: React.FC = () => {
 			usuarioId: lembrete.usuarioId
 		};
 
+		dispatch(setModalOpen(false));
+		dispatch(updateOne({ id: lembrete.id, titulo: editTitulo, descricao: editDetalhamento }));
+
 		store.dispatch(updateLembrete({ lembrete: obj }))
-			.then(() => {
-				enqueueSnackbar('Lembrete atualizado.', { variant: 'success', autoHideDuration: 2000 });		
-				dispatch(setModalOpen(false));
-			});		
+			.then((response) => {
+				if(!response.payload) return;
+				enqueueSnackbar('Lembrete atualizado.', { variant: 'success', autoHideDuration: 2000 });
+			});
 	}
 	
 	return (

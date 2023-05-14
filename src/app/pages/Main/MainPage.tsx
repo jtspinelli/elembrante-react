@@ -13,7 +13,6 @@ import Drawer from '../../../features/sideBar/SideBar';
 import AppBar from '../../components/AppBar/AppBar';
 import EditModal from '../../../features/editModal/EditModal';
 import ArquivoPage from '../Arquivo/ArquivoPage';
-import SavingModal from '../../../features/lembretes/SavingModal';
 import useMediaQuery from '@mui/material/useMediaQuery/useMediaQuery';
 import MeusLembretesPage from '../Meus Lembretes/MeusLembretesPage';
 
@@ -72,7 +71,6 @@ const MainPage: React.FC = () => {
 			</Main>
 
 			<EditModal />
-			<SavingModal />
 		</Box>
 	);
 };
