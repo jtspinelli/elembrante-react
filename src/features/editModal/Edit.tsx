@@ -24,11 +24,19 @@ const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>,
 
 	function positionCaret(){
 		if(!props.refs.detalhamento.current) return;
+		console.log(lembrete);
+		console.log(props.refs.detalhamento.current);
+		console.log(props.refs.detalhamento.current.childNodes);
 		
 		const range = document.createRange();
 		const sel = window.getSelection();
 
-		range.setStart(props.refs.detalhamento.current.childNodes[0],lembrete?.descricao?.length ?? 0);
+		if(props.refs.detalhamento.current.childNodes.length) {
+			range.setStart(props.refs.detalhamento.current.childNodes[0],lembrete?.descricao?.length ?? 0);
+		} else {
+			range.setStart(props.refs.detalhamento.current, 0);
+		}
+		
 		range.collapse(true);
 
 		sel?.removeAllRanges();
