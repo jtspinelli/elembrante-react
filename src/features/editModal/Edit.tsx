@@ -24,9 +24,6 @@ const Edit: React.FC<{refs: { titulo: MutableRefObject<HTMLElement | undefined>,
 
 	function positionCaret(){
 		if(!props.refs.detalhamento.current) return;
-		console.log(lembrete);
-		console.log(props.refs.detalhamento.current);
-		console.log(props.refs.detalhamento.current.childNodes);
 		
 		const range = document.createRange();
 		const sel = window.getSelection();
