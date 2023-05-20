@@ -9,7 +9,7 @@ import { useSnackbar } from 'notistack';
 import { setLoading } from '../../config/configSlice';
 import { RootState } from '../../../app/store';
 import GoogleLogin from '../../../app/components/GoogleLogin/GoogleLogin';
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import Logo from '../../../app/components/Logo/Logo';
 import Cookies from 'universal-cookie';
 
@@ -42,15 +42,23 @@ const Login: React.FC = () => {
 
 	/* #region LoginForm Navigation */
 	function next(e: React.FormEvent<HTMLDivElement>){
-		e.preventDefault();		
+		e.preventDefault();
+
+		dispatch(setLoading(true));
 
 		if(!username.length) return enqueueSnackbar('Informe um nome de usuário');
 
 		textFieldUsername.current?.blur();
 
 		axios.post(process.env.REACT_APP_SERVER_BASE_PATH + 'checkuser', { username })
-			.then(() =>	goToPasswordStep())
-			.catch(() => enqueueSnackbar('Usuário não encontrado'));
+			.then((response: AxiosResponse | AxiosError) =>	{
+				if(response instanceof AxiosError && response.response?.status === 404) {
+					dispatch(setLoading(false));
+					return enqueueSnackbar('Usuário não encontrado');
+				}
+				dispatch(setLoading(false));
+				goToPasswordStep();
+			});
 	}
 
 	function goToPasswordStep(){
